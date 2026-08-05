@@ -473,7 +473,7 @@ window.SITE_DATA = {
     hall: [
       // 첫 장이 섹션 대표 사진입니다 — 음식이 보이는 사진을 앞에 둡니다.
       // (예전 첫 장이던 rest-1 은 카운터 집기가 가득한 스냅이라 뒤로 옮겼습니다)
-      { src: "assets/img/hall/rest-2.jpg", cap: "화덕에서 갓 구워 낸 피자",          alt: "직원이 갓 구운 피자를 내는 모습" },
+      { src: "assets/img/hall/rest-2.jpg", cap: "화덕에서 갓 구워 낸 피자",          alt: "직원이 갓 구운 피자를 나무 판에 올리는 모습" },
       { src: "assets/img/hall/rest-3.jpg", cap: "주방에서 그때그때 조리합니다",      alt: "조리 중인 식당 주방" },
       { src: "assets/img/hall/rest-1.jpg", cap: "주문하시면 바로 만들어 드립니다",   alt: "식당 카운터에서 일하는 직원" },
       { src: "assets/img/hall/rest-4.jpg", cap: "매점 · 음료 · 아이스크림 코너",     alt: "매점과 음료 코너" },
