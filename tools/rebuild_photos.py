@@ -40,6 +40,17 @@ SRC_CANDIDATES = [
 ]
 SRC = next((p for p in SRC_CANDIDATES if p.is_dir()), SRC_CANDIDATES[0])
 
+# 보정본 폴더 — 여기에 같은 번호(MH_xxxxx.jpg)로 넣어 두면 촬영 원본보다 먼저 씁니다.
+# 촬영 원본을 손봤는데(사람·물건 지우기, 색보정 등) 다시 만들 수 없는 작업은
+# 여기에 넣어야 이 스크립트를 다시 돌려도 보정 결과가 유지됩니다.
+RETOUCHED = ROOT / "_retouched"
+
+
+def source_for(stem: str) -> Path:
+    """보정본이 있으면 그것을, 없으면 촬영 원본을 씁니다."""
+    fixed = RETOUCHED / f"{stem}.jpg"
+    return fixed if fixed.exists() else SRC / f"{stem}.jpg"
+
 # 대상파일 : (원본, 가로/세로 비율, 출력 가로폭, 세로 크롭 위치)
 MAP = {
     # ── 대문 슬라이드 (16:9) ─────────────────────────────
@@ -103,11 +114,12 @@ def main() -> None:
 
     total0 = total1 = 0
     for name, (stem, ratio, width, pos) in MAP.items():
-        src = SRC / f"{stem}.jpg"
+        src = source_for(stem)
         dst = IMG / name
         if not src.exists():
             print(f"  ⚠️  원본 없음 → 건너뜀: {stem}.jpg ({name})")
             continue
+        mark = " [보정본]" if src.parent == RETOUCHED else ""
 
         out = render(src, ratio, width, pos)
         buf = io.BytesIO()
@@ -119,7 +131,7 @@ def main() -> None:
         total1 += buf.tell()
         with Image.open(src) as o:
             osize = o.size
-        print(f"  {name:22} ← {stem}  {osize[0]}x{osize[1]}"
+        print(f"  {name:22} ← {stem}{mark}  {osize[0]}x{osize[1]}"
               f" → {out.size[0]}x{out.size[1]}  {old//1024}KB→{buf.tell()//1024}KB")
         if not dry:
             dst.write_bytes(buf.getvalue())
