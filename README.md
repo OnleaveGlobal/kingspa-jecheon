@@ -134,3 +134,4 @@ king/
 이 항목들은 `data/site-data.js` 안에 `⚠️` 표시로도 남겨두었습니다.
 # kingspa-jecheon
 # kingspa-jecheon
+# kingspa-jecheon
