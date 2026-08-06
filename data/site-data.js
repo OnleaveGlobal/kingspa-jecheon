@@ -501,8 +501,9 @@ window.SITE_DATA = {
       {
         name: "식사준비",
         photos: [
-          { img: "banchan-full.jpg", name: "한상 차림" },
-          { img: "bibimbap.jpg",     name: "비빔밥 정식" },
+          { img: "meal-1.jpg", name: "한상 차림" },
+          { img: "meal-2.jpg", name: "비빔밥 정식" },
+          { img: "meal-3.jpg", name: "찌개 한상" },
         ],
         items: [
           { name: "미역국",              price: "10,900원" },
@@ -530,7 +531,7 @@ window.SITE_DATA = {
       {
         name: "화락",
         photos: [
-          { img: "chicken-stirfry.jpg", name: "직화 바베큐치킨" },
+          { img: "hwarak-1.jpg", name: "직화 바베큐치킨" },
         ],
         items: [
           { name: "직화간장바베큐치킨",   price: "23,900원" },
@@ -542,8 +543,8 @@ window.SITE_DATA = {
       {
         name: "남자피자",
         photos: [
-          { img: "pizza.jpg",      name: "피자" },
-          { img: "pizza-beer.jpg", name: "피자 + 생맥주" },
+          { img: "pizza-1.jpg", name: "남자피자" },
+          { img: "pizza-2.jpg", name: "피자 + 생맥주" },
         ],
         items: [
           { name: "남자피자 (매콤피자)", price: "20,900원",
@@ -564,8 +565,8 @@ window.SITE_DATA = {
       {
         name: "KC치킨",
         photos: [
-          { img: "chicken-yangnyeom.jpg", name: "양념치킨" },
-          { img: "chicken-fried.jpg",     name: "후라이드치킨" },
+          { img: "kc-1.jpg", name: "양념치킨 + 후라이드치킨" },
+          { img: "kc-2.jpg", name: "양념치킨" },
         ],
         items: [
           { name: "후라이드치킨",  price: "20,900원" },
@@ -579,7 +580,7 @@ window.SITE_DATA = {
         name: "야간 메뉴",
         desc: "밤 10시 ~ 새벽 1시 30분에는 아래 메뉴만 주문하실 수 있습니다.",
         photos: [
-          { img: "chicken-beer.jpg", name: "치킨 + 생맥주" },
+          { img: "night-1.jpg", name: "치킨 + 생맥주" },
         ],
         items: [
           { name: "남자피자",      price: "20,900원 ~ 23,900원", sub: "5종류" },
@@ -594,8 +595,8 @@ window.SITE_DATA = {
         // 상하목장(매일유업) 소프트 아이스크림 — 매점 안에 묻어두지 않고 대분류로 세웁니다
         name: "상하목장 아이스크림",
         photos: [
-          { img: "softcone-2.jpg", name: "상하목장 소프트 아이스크림" },
-          { img: "softcone.jpg",   name: "상하목장 소프트 아이스크림" },
+          { img: "sangha-1.jpg", name: "상하목장 소프트 아이스크림" },
+          { img: "sangha-2.jpg", name: "상하목장 소프트 아이스크림" },
         ],
         items: [
           { name: "상하목장 소프트 아이스크림", price: "5,000원",
@@ -615,9 +616,9 @@ window.SITE_DATA = {
       {
         name: "매점",
         photos: [
-          { img: "sikhye.jpg",      name: "식혜" },
-          { img: "patbingsu.jpg",   name: "옛날 빙수" },
-          { img: "patbingsu-2.jpg", name: "옛날 빙수" },
+          { img: "bingsu-1.jpg", name: "옛날 빙수" },
+          { img: "bingsu-2.jpg", name: "옛날 빙수" },
+          { img: "drink-1.jpg", name: "식혜 · 냉커피" },
         ],
         items: [
           { name: "레인보우 슬러시",      price: "5,000원" },
@@ -646,7 +647,7 @@ window.SITE_DATA = {
           { name: "소주",         price: "5,000원" },
         ],
       },
-    ],
+],
   },
 
 };
