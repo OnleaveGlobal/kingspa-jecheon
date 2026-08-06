@@ -340,6 +340,47 @@ function jsonldFor(page, data, today) {
   return { '@context': 'https://schema.org', '@graph': graph };
 }
 
+/* ---------- 랜딩페이지 미리 그려두기 ----------
+   index.html 은 요금·메뉴·관광지를 자바스크립트로 채웁니다.
+   그래서 소스에는 글자가 없고, 자바스크립트를 돌리지 않는 크롤러(특히 AI 답변 엔진)는
+   빈 페이지를 봅니다. 여기서는 브라우저로 한 번 그린 결과를 index.html 에 되돌려 적어,
+   소스에 글자가 남게 합니다.
+
+   자바스크립트는 그대로 두므로 사람이 볼 때 동작은 완전히 같습니다.
+   (스크립트가 같은 내용을 다시 그릴 뿐입니다)                                    */
+async function prerenderIndex(page) {
+  const html = await page.evaluate(() => {
+    const doc = document.documentElement.cloneNode(true);
+
+    // 스크롤·클릭 때문에 잠깐 붙었던 흔적은 지웁니다. 처음 열었을 때 모습이어야 합니다.
+    doc.querySelectorAll('.gnb a.is-active').forEach((a) => a.classList.remove('is-active'));
+    doc.querySelectorAll('#header.is-stuck').forEach((h) => h.classList.remove('is-stuck'));
+    doc.querySelectorAll('#toTop.is-on').forEach((b) => b.classList.remove('is-on'));
+    const bg = doc.querySelector('#burger');
+    if (bg) { bg.setAttribute('aria-expanded', 'false'); bg.setAttribute('aria-label', '메뉴 열기'); }
+    const body = doc.querySelector('body');
+    if (body) body.removeAttribute('style');
+    doc.querySelectorAll('img[data-ph-done]').forEach((i) => i.removeAttribute('data-ph-done'));
+
+    // 대문 사진은 첫 장만 바로 받고 나머지는 재워 둡니다 (지연 로딩 유지)
+    doc.querySelectorAll('.vslide').forEach((img, i) => {
+      if (i === 0) return;
+      const src = img.getAttribute('src');
+      if (src) { img.setAttribute('data-src', src); img.removeAttribute('src'); }
+      img.classList.remove('is-on');
+    });
+
+    // 파일 끝의 줄바꿈은 브라우저가 </body> 안쪽 끝으로 끌어들입니다.
+    // 그대로 두면 다시 돌릴 때마다 빈 줄이 하나씩 쌓이므로 여기서 걷어냅니다.
+    const b = doc.querySelector('body');
+    while (b && b.lastChild && b.lastChild.nodeType === 3 && !b.lastChild.nodeValue.trim()) {
+      b.removeChild(b.lastChild);
+    }
+    return doc.outerHTML;
+  });
+  return '<!DOCTYPE html>\n' + html.trim() + '\n';
+}
+
 /* ---------- 본문 정리 ---------- */
 function tidy(html) {
   return html
@@ -365,6 +406,15 @@ function tidy(html) {
   const data = await page.evaluate(() => window.SITE_DATA);
   const TODAY = new Date().toISOString().slice(0, 10);
   const written = [];
+
+  /* ① 랜딩페이지를 먼저 미리 그려 둡니다 */
+  const before = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const rendered = await prerenderIndex(page);
+  fs.writeFileSync(path.join(ROOT, 'index.html'), rendered);
+  const grew = rendered.length - before.length;
+  console.log(`  index.html   ${(before.length / 1024).toFixed(0)}KB → ${(rendered.length / 1024).toFixed(0)}KB`
+    + `  (${grew >= 0 ? '+' : ''}${(grew / 1024).toFixed(0)}KB · 소스에 글자가 박혔습니다)`);
+
 
   for (const p of PAGES) {
     // 식당은 탭마다 다른 내용이 나오므로 전부 눌러 모읍니다 (검색엔진은 탭을 누르지 못합니다)
