@@ -570,8 +570,7 @@ window.SITE_DATA = {
       },
       {
         // 상하목장(매일유업) 소프트 아이스크림 — 매점 안에 묻어두지 않고 대분류로 세웁니다
-        name: "상하목장",
-        en: "ICE CREAM",
+        name: "상하목장 아이스크림",
         photos: [
           { img: "softcone-2.jpg", name: "상하목장 소프트 아이스크림" },
           { img: "softcone.jpg",   name: "상하목장 소프트 아이스크림" },
