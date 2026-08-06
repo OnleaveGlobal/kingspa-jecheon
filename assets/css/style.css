@@ -836,6 +836,9 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .steps p{font-size:13.5px; color:var(--ink-2); line-height:1.4; margin-top:7px; word-break:keep-all}
 
 .dtbl{margin-top:30px; border:0; background:none}
+/* 4단계(1·2·3·4) 다음에 오는 표 — 단계 설명 끝과 표 첫 줄이 붙어 보여서
+   한 덩어리처럼 읽힙니다. 여기만 넉넉히 띄웁니다 */
+.steps + .dtbl{margin-top:clamp(46px,5.5vw,76px)}
 .dtbl th{
   width:150px; text-align:left; padding:15px 18px 15px 0; vertical-align:top;
   font-size:15px; font-weight:800; letter-spacing:-.03em; color:var(--brand-dp);
@@ -1199,6 +1202,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   /* 좁은 화면에서는 표를 접어 항목별 묶음으로 — 구분선은 행 하나로 통일 */
   .dtbl, .dtbl tbody, .dtbl tr, .dtbl th, .dtbl td{display:block; width:100%}
   .dtbl{margin-top:16px}
+  .steps + .dtbl{margin-top:32px}
   .dtbl tr{border-bottom:1px solid var(--line)}
   .dtbl tr:last-child{border-bottom:0}
   .dtbl th{
