@@ -23,3 +23,6 @@ king-원본사진/
 
 # 작업용 원본(캐릭터 PNG · 음식 스튜디오컷 55MB) — 사이트 구동에 쓰이지 않습니다
 _original-photos/
+
+# npm 패키지 (npm install 로 다시 받을 수 있습니다)
+node_modules/

@@ -1032,6 +1032,10 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .ft__brand .brand__wm{height:21px}
 .ft__meta{font-size:14px; line-height:1.4; color:rgba(240,234,227,.72)}
 .ft__meta a{border-bottom:1px solid rgba(240,234,227,.3)}
+/* 섹션별 페이지로 가는 통로 */
+.ft__nav{display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:12px}
+.ft__nav a{font-size:13px; color:rgba(240,234,227,.72)}
+.ft__nav a:hover{color:#fff; text-decoration:underline}
 .ft__copy{margin-top:10px !important; font-size:12.5px; color:rgba(240,234,227,.42)}
 
 /* ============================================================

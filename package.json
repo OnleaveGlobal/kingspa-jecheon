@@ -1,0 +1,12 @@
+{
+  "name": "jecheon-kingspa",
+  "private": true,
+  "description": "제천킹스파찜질방 웹사이트",
+  "scripts": {
+    "build:pages": "node tools/build_pages.js",
+    "serve": "python3 -m http.server 8899"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}
