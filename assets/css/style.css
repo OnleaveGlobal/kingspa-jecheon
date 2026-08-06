@@ -620,6 +620,13 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .mtab.is-on b{color:var(--brand-dp)}
 .mtab.is-on em{color:var(--brand-dp); opacity:.7}
 
+/* 분류별 안내 한 줄 — 표 위에 얹습니다 */
+.mlead{
+  margin:0 0 16px; text-align:center;
+  font-size:14.5px; font-weight:700; letter-spacing:-.02em; color:var(--brand-dp);
+  word-break:keep-all;
+}
+
 /* 사진과 가격표를 좌우로 — 무엇을 얼마에 파는지 한눈에 */
 .mbody{display:grid; grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr); gap:28px; align-items:start}
 .mside{min-width:0}
@@ -647,6 +654,11 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .mtbl tbody th{
   text-align:left; padding:11px 18px; font-size:15px; font-weight:600; color:var(--ink);
   border-bottom:1px solid var(--line-2);
+}
+/* 메뉴판에 적힌 토핑·조건 설명 — 이름 아래 한 단 작게 */
+.mtbl tbody th span{
+  display:block; margin-top:3px; font-size:12px; font-weight:500;
+  line-height:1.35; color:var(--gray); word-break:keep-all;
 }
 .mtbl tbody td{
   text-align:center; padding:11px 18px; width:36%; border-bottom:1px solid var(--line-2);

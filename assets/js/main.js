@@ -650,15 +650,22 @@
         ? '<div class="tablewrap mtblwrap"><table class="mtbl">' +
             '<thead><tr><th>메뉴</th><th>판매가</th></tr></thead><tbody>' +
             g.items.map(function (it) {
-              return '<tr><th scope="row">' + it.name + '</th><td>' + (it.price || '-') + '</td></tr>';
+              return '<tr><th scope="row">' + it.name +
+                /* 피자 토핑처럼 메뉴판에 적힌 설명은 이름 아래 작게 */
+                (it.sub ? '<span>' + it.sub + '</span>' : '') +
+                '</th><td>' + (it.price || '-') + '</td></tr>';
             }).join('') +
           '</tbody></table></div>'
         : '';
 
-      // 가격표가 있으면 [사진 + 설명] 과 가격표를 좌우로, 없으면 사진만 전체 폭
-      body.innerHTML = hasTable
+      // 사진과 가격표가 다 있으면 좌우로, 하나만 있으면 전체 폭을 씁니다.
+      // (사진 없이 가격표만 있으면 왼쪽 사진칸이 빈 채로 남습니다)
+      /* 분류마다 붙는 안내 한 줄 (예: 야간 메뉴 주문 가능 시간) */
+      var lead = g.desc ? '<p class="mlead">' + g.desc + '</p>' : '';
+
+      body.innerHTML = lead + ((hasTable && pics.length)
         ? '<div class="mbody"><div class="mside">' + photos + '</div>' + table + '</div>'
-        : '<div class="mbody mbody--wide">' + photos + '</div>';
+        : '<div class="mbody mbody--wide">' + photos + table + '</div>');
 
       photoPlaceholders();
     };
@@ -675,7 +682,10 @@
     }
 
     var note = $('#menuNote');
-    if (note) note.textContent = m.note || '';
+    if (note) {
+      note.innerHTML = (m.note || '') +
+        (m.origin ? '<span class="cnote__credit">' + m.origin + '</span>' : '');
+    }
   }
 
   /* ---------- 사진 자리표시자 ----------
