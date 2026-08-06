@@ -147,7 +147,7 @@ window.SITE_DATA = {
   nearby: {
     show: true,
     title: "제천 가볼 만한 곳",
-    desc: "짐은 라커에 두고 다녀오세요. 나갔다 오셔도 다시 들어오실 수 있습니다.",
+    desc: "모두 킹스파에서 차로 40분 안쪽입니다. 짐은 라커에 두고 다녀오세요 — 나갔다 오셔도 다시 들어오실 수 있습니다.",
 
     imgBase: "assets/img/nearby/",
 
@@ -168,6 +168,7 @@ window.SITE_DATA = {
     places: [
       {
         slug: "uirimji",
+        from: "5km · 차로 약 10분",
         name: "의림지",
         tag: "제천십경 제1경",
         sub: "삼한시대 농경문화 발상지",
@@ -194,6 +195,10 @@ window.SITE_DATA = {
       },
       {
         slug: "samhan",
+        // ⚠️ 이 산책로는 지도 서비스에 좌표가 등록돼 있지 않아 정확히 잴 수 없었습니다.
+        //    바로 위 의림지 기준값을 그대로 썼습니다(의림지 아래 들판이라 거의 같습니다).
+        //    실제로 가보신 소요시간이 다르면 이 줄만 고쳐 주세요.
+        from: "5km · 차로 약 10분",
         name: "삼한의 초록길",
         sub: "의림지뜰을 걷는 사계절 산책로",
         desc: "의림지 아래 들판을 따라 2km 남짓 이어지는 산책길입니다. " +
@@ -216,6 +221,7 @@ window.SITE_DATA = {
       },
       {
         slug: "taksajeong",
+        from: "14km · 차로 약 15분",
         name: "탁사정",
         tag: "제천십경 제9경",
         sub: "솔숲과 기암절벽이 어우러진 여름 피서지",
@@ -241,6 +247,7 @@ window.SITE_DATA = {
       },
       {
         slug: "baeron",
+        from: "15km · 차로 약 20분",
         name: "배론성지",
         tag: "제천십경 제10경",
         sub: "한국 천주교 전파의 진원지",
@@ -270,6 +277,7 @@ window.SITE_DATA = {
       },
       {
         slug: "bakdaljae",
+        from: "15km · 차로 약 15분",
         name: "박달재",
         tag: "제천십경 제2경",
         sub: "박달이와 금봉이 전설이 있는 고갯길",
@@ -298,6 +306,7 @@ window.SITE_DATA = {
       },
       {
         slug: "cheongpung",
+        from: "22km · 차로 약 25분",
         name: "청풍문화유산단지",
         tag: "제천십경 제4경",
         sub: "호수 위의 작은 민속촌",
@@ -327,6 +336,7 @@ window.SITE_DATA = {
       },
       {
         slug: "cablecar",
+        from: "25km · 차로 약 30분",
         name: "청풍호반 케이블카",
         sub: "물태리에서 비봉산 정상까지 2.3km",
         desc: "청풍면 물태리에서 해발 531m 비봉산 정상까지 오르는 케이블카입니다. " +
@@ -354,7 +364,31 @@ window.SITE_DATA = {
         url: "https://www.jecheon.go.kr/tour/base/tour/contents/view?clturCntntsNo=3727&menuLevel=3&menuNo=16",
       },
       {
+        slug: "sanyacho",
+        from: "29km · 차로 약 35분",
+        name: "제천산야초마을",
+        sub: "약초로 하루를 보내는 체험마을",
+        desc: "수산면 하천리의 약초 체험마을입니다. " +
+              "천연염색과 약초 향기주머니 만들기, 약초떡 만들기, 두부 만들기, 천연비누와 아토피 연고 만들기 같은 " +
+              "체험을 미리 예약하고 다녀올 수 있습니다.",
+        info: {
+          주소: "충청북도 제천시 수산면 옥순봉로6길 3",
+          전화: "010-9947-4588 · 043-651-1357",
+        },
+        note: "체험은 예약제로 운영합니다. 가시기 전에 전화로 확인해 주세요.",
+        photos: [
+          { f: "sanyacho-1.jpg", alt: "제천산야초마을 전경" },
+          { f: "sanyacho-2.jpg", alt: "제천산야초마을 체험장" },
+          { f: "sanyacho-3.jpg", alt: "제천산야초마을 마당" },
+          { f: "sanyacho-4.jpg", alt: "제천산야초마을 숙소" },
+          { f: "sanyacho-5.jpg", alt: "제천산야초마을 주변 풍경" },
+          { f: "sanyacho-6.jpg", alt: "제천산야초마을 입구" },
+        ],
+        url: "https://www.jecheon.go.kr/tour/base/tour/contents/view?clturCntntsNo=272&menuLevel=3&menuNo=64",
+      },
+      {
         slug: "oksunbong",
+        from: "34km · 차로 약 40분",
         name: "옥순봉 출렁다리",
         tag: "제천십경 제8경",
         sub: "청풍호 수면 위 222m",
@@ -381,6 +415,7 @@ window.SITE_DATA = {
       },
       {
         slug: "cheukbaek",
+        from: "36km · 차로 약 40분",
         name: "측백숲으로",
         sub: "천연기념물 측백나무 자생지의 체험장",
         desc: "수산면 측백숲은 천연기념물 제1호로 지정된 측백나무 자생지로, 넓이가 3만㎡에 이릅니다. " +
@@ -396,29 +431,7 @@ window.SITE_DATA = {
         ],
         url: "https://www.jecheon.go.kr/tour/base/tour/contents/view?menuLevel=2&menuNo=53&clturCntntsNo=94190",
       },
-      {
-        slug: "sanyacho",
-        name: "제천산야초마을",
-        sub: "약초로 하루를 보내는 체험마을",
-        desc: "수산면 하천리의 약초 체험마을입니다. " +
-              "천연염색과 약초 향기주머니 만들기, 약초떡 만들기, 두부 만들기, 천연비누와 아토피 연고 만들기 같은 " +
-              "체험을 미리 예약하고 다녀올 수 있습니다.",
-        info: {
-          주소: "충청북도 제천시 수산면 옥순봉로6길 3",
-          전화: "010-9947-4588 · 043-651-1357",
-        },
-        note: "체험은 예약제로 운영합니다. 가시기 전에 전화로 확인해 주세요.",
-        photos: [
-          { f: "sanyacho-1.jpg", alt: "제천산야초마을 전경" },
-          { f: "sanyacho-2.jpg", alt: "제천산야초마을 체험장" },
-          { f: "sanyacho-3.jpg", alt: "제천산야초마을 마당" },
-          { f: "sanyacho-4.jpg", alt: "제천산야초마을 숙소" },
-          { f: "sanyacho-5.jpg", alt: "제천산야초마을 주변 풍경" },
-          { f: "sanyacho-6.jpg", alt: "제천산야초마을 입구" },
-        ],
-        url: "https://www.jecheon.go.kr/tour/base/tour/contents/view?clturCntntsNo=272&menuLevel=3&menuNo=64",
-      },
-    ],
+],
 
     footer: "사진과 안내 내용은 제천시 공식 관광 누리집의 「추천 관광지」에서 가져왔습니다. 요금과 운영시간은 바뀔 수 있으니 가시기 전에 한 번 확인해 주세요.",
     // CC BY 사진은 저작자 표시가 의무입니다 — 지우지 말아 주세요.
@@ -556,11 +569,22 @@ window.SITE_DATA = {
         ],
       },
       {
+        // 상하목장(매일유업) 소프트 아이스크림 — 매점 안에 묻어두지 않고 대분류로 세웁니다
+        name: "상하목장",
+        en: "ICE CREAM",
+        photos: [
+          { img: "softcone-2.jpg", name: "상하목장 소프트 아이스크림" },
+          { img: "softcone.jpg",   name: "상하목장 소프트 아이스크림" },
+        ],
+        // ⚠️ 아이스크림 가격을 알려주시면 아래에 넣겠습니다. 예) { name: "소프트 아이스크림", price: "3,000원" }
+        items: [],
+      },
+      {
         name: "매점",
         photos: [
           { img: "sikhye.jpg",     name: "식혜" },
           { img: "patbingsu.jpg",  name: "팥빙수" },
-          { img: "softcone.jpg",   name: "소프트 아이스크림" },
+          { img: "patbingsu-2.jpg", name: "팥빙수" },
         ],
         // ⚠️ 매점 품목의 가격을 알려주시면 아래에 넣겠습니다.
         items: [],

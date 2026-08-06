@@ -322,6 +322,8 @@
               '<img src="' + base + p.slug + '-card.jpg" alt="' + esc(p.name) + '" loading="lazy" width="760" height="428">' +
             '</button>' +
             '<div class="spot__bd">' +
+              /* 킹스파에서 얼마나 걸리는지를 이름보다 먼저 보여줍니다 */
+              (p.from ? '<span class="spot__from">' + p.from + '</span>' : '') +
               '<p class="spot__t">' + p.name +
                 (p.tag ? '<em class="nb__tag">' + p.tag + '</em>' : '') + '</p>' +
               (p.sub ? '<p class="spot__sub">' + p.sub + '</p>' : '') +
