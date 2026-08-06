@@ -616,13 +616,13 @@ window.SITE_DATA = {
         name: "매점",
         photos: [
           { img: "sikhye.jpg",      name: "식혜" },
-          { img: "patbingsu.jpg",   name: "팥빙수" },
-          { img: "patbingsu-2.jpg", name: "팥빙수" },
+          { img: "patbingsu.jpg",   name: "옛날 빙수" },
+          { img: "patbingsu-2.jpg", name: "옛날 빙수" },
         ],
         items: [
           { name: "레인보우 슬러시",      price: "5,000원" },
           { name: "슬러시",              price: "4,000원" },
-          { name: "팥빙수",              price: "6,000원" },
+          { name: "옛날 빙수",            price: "8,000원" },
           { name: "팝콘",                price: "4,500원" },
           { name: "벨지언와플 & 생크림",  price: "3,000원" },
           { name: "버터구이 오징어",      price: "5,000원" },
