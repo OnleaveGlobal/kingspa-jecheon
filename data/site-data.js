@@ -616,9 +616,10 @@ window.SITE_DATA = {
       {
         name: "매점",
         photos: [
-          { img: "bingsu-1.jpg", name: "옛날 빙수" },
-          { img: "bingsu-2.jpg", name: "옛날 빙수" },
-          { img: "drink-1.jpg", name: "식혜 · 냉커피" },
+          // 빙수·식혜는 주황 배경 원본을 그대로 씁니다 (사업주 요청)
+          { img: "patbingsu-2.jpg", name: "옛날 빙수" },
+          { img: "patbingsu.jpg",   name: "옛날 빙수" },
+          { img: "sikhye.jpg",      name: "식혜 · 냉커피" },
         ],
         items: [
           { name: "레인보우 슬러시",      price: "5,000원" },
