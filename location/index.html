@@ -29,6 +29,45 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": [
+        "HealthAndBeautyBusiness",
+        "DaySpa"
+      ],
+      "@id": "https://www.jecheonkingspa.com/#business",
+      "name": "제천킹스파찜질방",
+      "alternateName": "제천킹스파",
+      "url": "https://www.jecheonkingspa.com/",
+      "telephone": "+82-507-1385-4604",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "풍양로9길 5",
+        "addressLocality": "제천시",
+        "addressRegion": "충청북도",
+        "addressCountry": "KR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 37.1385239,
+        "longitude": 128.2085504
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "priceRange": "₩8,000 - ₩12,000",
+      "image": "https://www.jecheonkingspa.com/assets/img/og-image.jpg"
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -50,6 +89,11 @@
       "name": "오시는 길 — 고속버스터미널 도보 7분",
       "description": "충북 제천시 풍양로9길 5. 고속버스터미널에서 걸어서 7분, 중앙시장 4분, 제천역 택시 10분. 주차장 두 곳 모두 무료입니다.",
       "url": "https://www.jecheonkingspa.com/location/",
+      "inLanguage": "ko-KR",
+      "dateModified": "2026-08-06",
+      "about": {
+        "@id": "https://www.jecheonkingspa.com/#business"
+      },
       "isPartOf": {
         "@type": "WebSite",
         "name": "제천킹스파찜질방",
@@ -94,7 +138,7 @@
 <section class="sec sec--gray">
   <div class="container sec__grid">
     <header class="shd">
-      <h2><img class="shd__char" src="/assets/img/char-hello.png" alt="" loading="lazy">오시는 길</h2>
+      <h1><img class="shd__char" src="/assets/img/char-hello.png" alt="" loading="lazy">오시는 길</h1>
       <span class="shd__sub">고속버스터미널에서 걸어서 7분, 중앙시장에서 4분입니다</span>
     </header>
     <div class="sec__body">

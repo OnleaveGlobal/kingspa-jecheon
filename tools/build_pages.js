@@ -62,6 +62,24 @@ const PAGES = [
     nav: '이용안내',
     title: '이용안내 — 처음 오시는 분께',
     desc: '발권부터 찜질까지 순서대로 안내합니다. 남녀 구분, 준비물, 외출 후 재입장, 어린이 동반, 주차 안내.',
+    /* 자주 묻는 질문 — 검색결과와 AI 답변에 그대로 인용되는 부분입니다.
+       본문(이용안내 표)과 같은 내용을 질문 형태로만 바꾼 것입니다. */
+    faq: [
+      { q: '남녀가 함께 이용할 수 있나요?',
+        a: '대욕장과 야외 노천탕은 남탕과 여탕이 따로 있습니다. 찜질 공간과 헬스장, 식당은 찜질복을 입고 남녀가 함께 이용합니다.' },
+      { q: '무엇을 챙겨 가야 하나요?',
+        a: '수건과 찜질복은 드립니다. 세면도구는 개인 지참을 권하며, 매점에서도 구입하실 수 있습니다.' },
+      { q: '나갔다가 다시 들어올 수 있나요?',
+        a: '이용 중 외출하셨다가 다시 들어오실 수 있습니다. 프런트에 말씀해 주세요.' },
+      { q: '아이와 함께 가도 되나요?',
+        a: '미취학 아동은 소인 요금입니다. 키즈존이 있어 아이와 함께 오시기 좋습니다.' },
+      { q: '주차는 무료인가요?',
+        a: '건물 전용 주차장과 길 건너 제2주차장 모두 무료입니다. 주말에는 제2주차장이 여유롭습니다.' },
+      { q: '몇 시까지 하나요?',
+        a: '24시간 연중무휴로 운영합니다. 설과 추석에도 영업합니다.' },
+      { q: '요금이 얼마인가요?',
+        a: '목욕은 대인 8,000원, 소인 7,000원입니다. 찜질방은 대인 12,000원, 소인 11,000원이며 헬스장 이용이 포함됩니다. 22시부터 05시까지는 1,000원이 추가됩니다.' },
+    ],
   },
   {
     slug: 'location', from: '#location',
@@ -209,45 +227,116 @@ ${PAGES.map((p) => `        <a href="/${p.slug}/">${p.nav}</a>`).join('\n')}
 `;
 }
 
-/* ---------- 페이지별 구조화 데이터 ---------- */
-function jsonldFor(page, data) {
-  const crumb = {
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: '홈', item: SITE + '/' },
-      { '@type': 'ListItem', position: 2, name: page.nav, item: `${SITE}/${page.slug}/` },
-    ],
+/* ---------- 페이지별 구조화 데이터 ----------
+   사업체(LocalBusiness)를 @id 로 한 번 정의하고 모든 페이지에서 그걸 가리킵니다.
+   그래야 검색엔진과 AI 가 "이 요금·메뉴는 제천킹스파찜질방의 것"이라고 묶어서 이해합니다. */
+const BIZ_ID = `${SITE}/#business`;
+
+function business(data) {
+  const i = data.info;
+  return {
+    '@type': ['HealthAndBeautyBusiness', 'DaySpa'],
+    '@id': BIZ_ID,
+    name: i.name,
+    alternateName: i.shortName,
+    url: SITE + '/',
+    telephone: '+82-507-1385-4604',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '풍양로9길 5',
+      addressLocality: '제천시', addressRegion: '충청북도', addressCountry: 'KR',
+    },
+    geo: { '@type': 'GeoCoordinates', latitude: 37.1385239, longitude: 128.2085504 },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '00:00', closes: '23:59',
+    },
+    priceRange: '₩8,000 - ₩12,000',
+    image: `${SITE}/assets/img/og-image.jpg`,
   };
-  const graph = [crumb, {
-    '@type': 'WebPage',
-    name: page.title,
-    description: page.desc,
-    url: `${SITE}/${page.slug}/`,
-    isPartOf: { '@type': 'WebSite', name: '제천킹스파찜질방', url: SITE + '/' },
-  }];
+}
+
+function jsonldFor(page, data, today) {
+  const graph = [
+    business(data),
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: '홈', item: SITE + '/' },
+        { '@type': 'ListItem', position: 2, name: page.nav, item: `${SITE}/${page.slug}/` },
+      ],
+    },
+    {
+      '@type': 'WebPage',
+      name: page.title,
+      description: page.desc,
+      url: `${SITE}/${page.slug}/`,
+      inLanguage: 'ko-KR',
+      dateModified: today,
+      about: { '@id': BIZ_ID },
+      isPartOf: { '@type': 'WebSite', name: '제천킹스파찜질방', url: SITE + '/' },
+    },
+  ];
 
   if (page.slug === 'pricing') {
-    graph.push({
-      '@type': 'Offer', name: '이용요금', url: `${SITE}/pricing/`,
-      priceCurrency: 'KRW',
-      offers: data.pricing.main.map((r) => ({
-        '@type': 'Offer', name: r.item,
-        price: String(r.adult).replace(/[^0-9]/g, ''), priceCurrency: 'KRW',
-      })),
+    // Offer 안에 offers 를 넣는 건 잘못된 모양입니다. 입장권을 Product 로 두고
+    // 각 요금을 Offer 로 다는 것이 규격에 맞고 검색결과에 가격이 뜰 수 있습니다.
+    data.pricing.main.forEach((r) => {
+      graph.push({
+        '@type': 'Product',
+        name: `${data.info.name} ${r.item} 이용권`,
+        description: r.sub || '',
+        brand: { '@id': BIZ_ID },
+        offers: [
+          {
+            '@type': 'Offer', name: '대인', url: `${SITE}/pricing/`,
+            price: String(r.adult).replace(/[^0-9]/g, ''), priceCurrency: 'KRW',
+            availability: 'https://schema.org/InStock',
+            seller: { '@id': BIZ_ID },
+          },
+          {
+            '@type': 'Offer', name: '소인', url: `${SITE}/pricing/`,
+            price: String(r.child).replace(/[^0-9]/g, ''), priceCurrency: 'KRW',
+            availability: 'https://schema.org/InStock',
+            seller: { '@id': BIZ_ID },
+          },
+        ],
+      });
     });
   }
+
   if (page.slug === 'menu') {
     graph.push({
       '@type': 'Menu', name: '제천킹스파찜질방 식당 메뉴', url: `${SITE}/menu/`,
+      inLanguage: 'ko-KR',
       hasMenuSection: data.menu.groups.map((g) => ({
         '@type': 'MenuSection', name: g.name,
-        hasMenuItem: (g.items || []).filter((i) => i.name).map((i) => ({
+        description: g.desc || undefined,
+        hasMenuItem: (g.items || []).filter((i) => i.name && i.price).map((i) => ({
           '@type': 'MenuItem', name: i.name,
-          offers: { '@type': 'Offer', price: String(i.price || '').replace(/[^0-9]/g, ''), priceCurrency: 'KRW' },
+          description: i.sub || undefined,
+          offers: {
+            '@type': 'Offer',
+            price: String(i.price).replace(/[^0-9]/g, ''), priceCurrency: 'KRW',
+          },
         })),
       })),
     });
   }
+
+  /* 이용안내는 원래 「무엇이 어떻습니까」 형태라 그대로 FAQ 로 옮깁니다.
+     AI 검색이 답변을 만들 때 가장 잘 가져다 쓰는 형식입니다. */
+  if (page.faq && page.faq.length) {
+    graph.push({
+      '@type': 'FAQPage',
+      mainEntity: page.faq.map((f) => ({
+        '@type': 'Question', name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    });
+  }
+
   return { '@context': 'https://schema.org', '@graph': graph };
 }
 
@@ -274,6 +363,7 @@ function tidy(html) {
   await new Promise((r) => setTimeout(r, 2500));
 
   const data = await page.evaluate(() => window.SITE_DATA);
+  const TODAY = new Date().toISOString().slice(0, 10);
   const written = [];
 
   for (const p of PAGES) {
@@ -304,6 +394,16 @@ function tidy(html) {
       const clone = sec.cloneNode(true);
       clone.removeAttribute('hidden');
       clone.removeAttribute('id');
+      // 페이지마다 제목이 하나씩은 h1 이어야 합니다.
+      // 랜딩페이지에서는 h1 이 「충북 최대 규모 2,400평 찜질방」이고
+      // 섹션 제목은 h2 였는데, 이 페이지에서는 섹션이 곧 주제이므로 h1 로 올립니다.
+      const top = clone.querySelector('h2');
+      if (top) {
+        const h1 = document.createElement('h1');
+        [...top.attributes].forEach((a) => h1.setAttribute(a.name, a.value));
+        h1.innerHTML = top.innerHTML;
+        top.replaceWith(h1);
+      }
       // 섹션 안의 id 는 페이지마다 하나뿐이면 되므로 그대로 두되, 자바스크립트용 껍데기는 정리
       clone.querySelectorAll('[data-spot]').forEach((b) => {
         const img = b.querySelector('img');
@@ -319,7 +419,7 @@ function tidy(html) {
 
     const html = shell({
       slug: p.slug, title: p.title, desc: p.desc,
-      body: tidy(body), jsonld: jsonldFor(p, data), nav: navHtml(p.slug),
+      body: tidy(body), jsonld: jsonldFor(p, data, TODAY), nav: navHtml(p.slug),
     });
     const dir = path.join(ROOT, p.slug);
     fs.mkdirSync(dir, { recursive: true });
@@ -334,7 +434,7 @@ function tidy(html) {
   }
 
   /* sitemap.xml — 검색엔진에 "이 주소들이 있습니다" 하고 알려주는 목록 */
-  const today = new Date().toISOString().slice(0, 10);
+  const today = TODAY;
   const urls = [{ loc: SITE + '/', pri: '1.0' }]
     .concat(written.map((p) => ({ loc: `${SITE}/${p.slug}/`, pri: '0.8' })));
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'),
@@ -342,8 +442,16 @@ function tidy(html) {
     urls.map((u) => `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <priority>${u.pri}</priority>\n  </url>`).join('\n') +
     `\n</urlset>\n`);
 
+  /* robots.txt — 검색·AI 크롤러 모두에게 전체 공개.
+     ChatGPT · Claude · Perplexity 같은 AI 답변 엔진은 자기 이름의 크롤러를 쓰는데,
+     차단하지 않으면 우리 요금·메뉴를 답변에 인용할 수 있습니다. 여기서는 명시적으로 열어 둡니다. */
   fs.writeFileSync(path.join(ROOT, 'robots.txt'),
-    `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
+    ['User-agent: *', 'Allow: /', '',
+     '# AI 답변 엔진 (검색 결과에 우리 정보가 인용되도록 열어 둡니다)',
+     ...['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-User',
+         'PerplexityBot', 'Google-Extended', 'Applebot-Extended', 'CCBot']
+       .flatMap((ua) => [`User-agent: ${ua}`, 'Allow: /', '']),
+     `Sitemap: ${SITE}/sitemap.xml`, ''].join('\n'));
 
   console.log(`\n${written.length}개 페이지 + sitemap.xml + robots.txt 생성 완료`);
   await browser.close();

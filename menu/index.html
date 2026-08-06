@@ -29,6 +29,45 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": [
+        "HealthAndBeautyBusiness",
+        "DaySpa"
+      ],
+      "@id": "https://www.jecheonkingspa.com/#business",
+      "name": "제천킹스파찜질방",
+      "alternateName": "제천킹스파",
+      "url": "https://www.jecheonkingspa.com/",
+      "telephone": "+82-507-1385-4604",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "풍양로9길 5",
+        "addressLocality": "제천시",
+        "addressRegion": "충청북도",
+        "addressCountry": "KR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 37.1385239,
+        "longitude": 128.2085504
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "priceRange": "₩8,000 - ₩12,000",
+      "image": "https://www.jecheonkingspa.com/assets/img/og-image.jpg"
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -50,6 +89,11 @@
       "name": "식당 메뉴와 가격 — 식사 · 치킨 · 피자 · 야간메뉴",
       "description": "찜질복 차림 그대로 이용하는 식당. 미역국 10,900원부터, 직화 바베큐치킨 · 남자피자 · KC치킨 · 상하목장 아이스크림 · 매점까지 전 품목 가격 안내. 밤 10시~새벽 1시 30분 야간 메뉴도 있습니다.",
       "url": "https://www.jecheonkingspa.com/menu/",
+      "inLanguage": "ko-KR",
+      "dateModified": "2026-08-06",
+      "about": {
+        "@id": "https://www.jecheonkingspa.com/#business"
+      },
       "isPartOf": {
         "@type": "WebSite",
         "name": "제천킹스파찜질방",
@@ -60,6 +104,7 @@
       "@type": "Menu",
       "name": "제천킹스파찜질방 식당 메뉴",
       "url": "https://www.jecheonkingspa.com/menu/",
+      "inLanguage": "ko-KR",
       "hasMenuSection": [
         {
           "@type": "MenuSection",
@@ -104,6 +149,7 @@
             {
               "@type": "MenuItem",
               "name": "여름별미 (콩국수)",
+              "description": "계절 메뉴 · 6~9월",
               "offers": {
                 "@type": "Offer",
                 "price": "9900",
@@ -269,6 +315,7 @@
             {
               "@type": "MenuItem",
               "name": "남자피자 (매콤피자)",
+              "description": "매콤소스 + 모짜렐라치즈 + 체다",
               "offers": {
                 "@type": "Offer",
                 "price": "20900",
@@ -278,6 +325,7 @@
             {
               "@type": "MenuItem",
               "name": "애플고르곤졸라",
+              "description": "애플소스 + 고르곤소스 + 모짜렐라치즈 + 고르곤졸라치즈 + 체다",
               "offers": {
                 "@type": "Offer",
                 "price": "23900",
@@ -287,6 +335,7 @@
             {
               "@type": "MenuItem",
               "name": "베이컨포테이토",
+              "description": "토마토소스 + 모짜렐라치즈 + 베이컨 + 감자튀김",
               "offers": {
                 "@type": "Offer",
                 "price": "23900",
@@ -296,6 +345,7 @@
             {
               "@type": "MenuItem",
               "name": "불고기피자",
+              "description": "토마토소스 + 양파 + 양송이 + 불고기 + 모짜렐라치즈",
               "offers": {
                 "@type": "Offer",
                 "price": "23900",
@@ -305,6 +355,7 @@
             {
               "@type": "MenuItem",
               "name": "오리지널피자",
+              "description": "토마토소스 + 양파 + 양송이 + 불고기 + 페퍼로니 + 블랙올리브 + 모짜렐라치즈",
               "offers": {
                 "@type": "Offer",
                 "price": "23900",
@@ -332,6 +383,7 @@
             {
               "@type": "MenuItem",
               "name": "피자소스 추가",
+              "description": "갈릭소스 · 핫소스",
               "offers": {
                 "@type": "Offer",
                 "price": "1000",
@@ -385,10 +437,12 @@
         {
           "@type": "MenuSection",
           "name": "야간 메뉴",
+          "description": "밤 10시 ~ 새벽 1시 30분에는 아래 메뉴만 주문하실 수 있습니다.",
           "hasMenuItem": [
             {
               "@type": "MenuItem",
               "name": "남자피자",
+              "description": "5종류",
               "offers": {
                 "@type": "Offer",
                 "price": "2090023900",
@@ -449,6 +503,7 @@
             {
               "@type": "MenuItem",
               "name": "상하목장 소프트 아이스크림",
+              "description": "유기농 우유로 만듭니다 · 우유 · 초코 · 반반",
               "offers": {
                 "@type": "Offer",
                 "price": "5000",
@@ -458,6 +513,7 @@
             {
               "@type": "MenuItem",
               "name": "천연과일 아이스크림",
+              "description": "ICE FACTORY · 스트로베리 · 블루레몬에이드 · 수박 · 레인보우팝 · 애니멀초코",
               "offers": {
                 "@type": "Offer",
                 "price": "5000",
@@ -467,6 +523,7 @@
             {
               "@type": "MenuItem",
               "name": "딸기팝핑 아이스크림",
+              "description": "딸기 · 초코링 · 톡톡 터지는 팝핑보바",
               "offers": {
                 "@type": "Offer",
                 "price": "7000",
@@ -476,6 +533,7 @@
             {
               "@type": "MenuItem",
               "name": "망고팝핑 아이스크림",
+              "description": "망고 · 톡톡 터지는 팝핑보바",
               "offers": {
                 "@type": "Offer",
                 "price": "7000",
@@ -485,6 +543,7 @@
             {
               "@type": "MenuItem",
               "name": "통통팥떡 아이스크림",
+              "description": "우리 팥과 떡을 얹었습니다",
               "offers": {
                 "@type": "Offer",
                 "price": "7000",
@@ -494,6 +553,7 @@
             {
               "@type": "MenuItem",
               "name": "벌집꿀 아이스크림",
+              "description": "벌집꿀을 통째로 얹었습니다",
               "offers": {
                 "@type": "Offer",
                 "price": "8000",
@@ -563,6 +623,7 @@
             {
               "@type": "MenuItem",
               "name": "맥반석 계란",
+              "description": "3개",
               "offers": {
                 "@type": "Offer",
                 "price": "3000",
@@ -572,6 +633,7 @@
             {
               "@type": "MenuItem",
               "name": "훈제란",
+              "description": "3개",
               "offers": {
                 "@type": "Offer",
                 "price": "3500",
@@ -644,6 +706,7 @@
             {
               "@type": "MenuItem",
               "name": "생맥주",
+              "description": "500cc",
               "offers": {
                 "@type": "Offer",
                 "price": "5000",
@@ -728,7 +791,7 @@
 <section class="sec menu">
   <div class="container">
     <header class="shd">
-      <h2><img class="shd__char" src="/assets/img/char-meal.png" alt="" loading="lazy">식당 메뉴</h2>
+      <h1><img class="shd__char" src="/assets/img/char-meal.png" alt="" loading="lazy">식당 메뉴</h1>
     </header>
 
     
