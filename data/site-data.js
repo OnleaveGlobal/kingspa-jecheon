@@ -464,8 +464,11 @@ window.SITE_DATA = {
     //    ],
     panoramas: [],
 
-    // ② embedUrl — 외부 360 투어 서비스의 "삽입(embed)" 주소
-    embedUrl: "",
+    // ② embedUrl — 완성된 360 투어를 페이지 안에 끼워 넣습니다 ★ 지금 이 방식입니다
+    //    /tour/ 폴더에 투어가 통째로 들어 있습니다 (파노라마 82장 + 뷰어).
+    //    투어 자체를 손보시려면 tour/tour.html 안의 SCENES 배열만 고치면 됩니다.
+    //    주소 앞의 / 는 지우지 마세요 — 하위 페이지(/facilities/)에서도 찾아가야 합니다.
+    embedUrl: "/tour/tour.html",
 
     // ③ linkUrl — 삽입이 안 되고 새 창으로만 열리는 경우
     linkUrl: "",

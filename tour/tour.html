@@ -1,0 +1,1154 @@
+<!--
+================================================================================
+  Claude Code 지시서 — 이 파일 하나로 360 가상투어 웹페이지를 완성해줘.
+
+  [대상] 정적 HTML 사이트.
+
+  [해야 할 일]
+  1. 이 tour.html 이 그대로 브라우저에서 뜨도록 필요한 파일을 준비할 것.
+     - 360 뷰어 라이브러리는 Pannellum (MIT). 아래 <head> 가 참조하는 경로:
+         lib/pannellum.js , lib/pannellum.css
+       이 두 파일을 준비해서 tour.html 과 같은 위치의 lib/ 폴더에 둘 것.
+       (npm 의 'pannellum' 패키지 build/pannellum.js, build/pannellum.css 를 복사하면 됨.
+        CDN https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/ 도 가능하지만,
+        오프라인·방화벽 대비해 로컬 lib/ 배치를 권장.)
+  2. 지점 사진(equirectangular, 가로:세로 = 2:1)은 images/ 폴더에 두고,
+     아래 SCENES 배열의 image 경로와 일치시킬 것. 사진은 함께 전달됨.
+     사진이 아직 없으면 images/ 폴더와 자리표시 주석만 남겨둘 것.
+  3. 로컬 확인은 정적 서버로:  npx serve  또는  python3 -m http.server
+     (file:// 로 열면 브라우저 보안 때문에 사진이 안 뜸 — 반드시 서버로.)
+  4. 사이트에 붙일 때는 이 폴더를 통째로 올리고 /tour.html 로 링크하거나
+     <iframe src="tour.html" style="width:100%;height:600px;border:0"></iframe> 로 삽입.
+
+  [편집 포인트] 아래 <script> 안의 SCENES 배열만 고치면 지점/핫스팟이 바뀜.
+  [건드리지 말 것] lib/ 안의 pannellum 파일, SCENES 아래의 로직 코드.
+================================================================================
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>제천킹스파 찜질방</title>
+
+<!-- ===== Pannellum (MIT) — lib 폴더의 파일 사용 ===== -->
+<link rel="stylesheet" href="lib/pannellum.css">
+<script src="lib/pannellum.js"></script>
+
+<style>
+  :root{
+    /* 무채색(흰/검/회) 범용 테마 — 강조색은 흰색 (변수명 --gold 유지) */
+    --bg:#141414; --paper:#f4f4f5; --muted:rgba(244,244,245,.6);
+    --gold:#ffffff; --gold-bright:#e8e8e8;
+    --glass:rgba(24,24,24,.62); --glass-strong:rgba(16,16,16,.88);
+    --hair:rgba(255,255,255,.12);
+    --pin:#ffffff;   /* 이동 핀 색상(호버 시 채워지는 색) — 에디터 설정에서 바뀜 */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    background:var(--bg);color:var(--paper);overflow:hidden;-webkit-font-smoothing:antialiased}
+  #panorama{width:100%;height:100vh}
+
+  .scrim{position:fixed;left:0;right:0;z-index:4;pointer-events:none}
+  .scrim.top{top:0;height:130px;background:linear-gradient(rgba(6,6,6,.5),transparent)}
+  .scrim.bot{bottom:0;height:220px;background:linear-gradient(transparent,rgba(6,6,6,.62))}
+
+  /* 씬 이름만 (키커·진행률 제거) */
+  .scene-label{position:fixed;left:24px;bottom:128px;z-index:6}
+  .scene-label .title{font-size:23px;font-weight:750;letter-spacing:-.01em;
+    text-shadow:0 2px 16px rgba(0,0,0,.55);line-height:1.05}
+
+  .dock{position:fixed;left:50%;bottom:60px;transform:translateX(-50%) translateY(0);opacity:1;z-index:7;
+    width:min(720px,94vw);background:var(--glass);backdrop-filter:blur(18px) saturate(1.2);
+    border:1px solid var(--hair);border-radius:18px;padding:12px 12px 10px;
+    box-shadow:0 18px 50px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+    transition:opacity .45s cubic-bezier(.22,.61,.36,1),transform .45s cubic-bezier(.22,.61,.36,1),visibility .45s}
+  .dock.collapsed{opacity:0;transform:translateX(-50%) translateY(26px);visibility:hidden;pointer-events:none}
+  /* 도크 열기/닫기 핸들 (항상 표시) */
+  .dock-toggle{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:8;
+    display:flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:12px;
+    background:var(--glass);border:1px solid var(--hair);color:var(--paper);cursor:pointer;
+    font-size:12px;font-weight:600;backdrop-filter:blur(16px) saturate(1.2);
+    box-shadow:0 8px 24px rgba(0,0,0,.4);transition:background .15s}
+  .dock-toggle:hover{background:var(--glass-strong)}
+  .dock-toggle .ico{width:15px;height:15px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .dock-toggle .chev{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+  .dock-toggle.open .chev{transform:rotate(180deg)}
+  .dock-toggle .dt-label{font-size:12px;font-weight:600;letter-spacing:.01em;line-height:1}
+  /* 좌측 로고 (표시 전용) — 하단 기본, .top 붙이면 상단 */
+  .brand-logo{position:fixed;left:22px;bottom:18px;z-index:8;max-height:50px;max-width:180px;
+    object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.55))}
+  .brand-logo.top{top:18px;bottom:auto}
+  /* 나디르(바닥 가리개) — 원형 이미지, 클릭 불가 */
+  .hs-nadir{pointer-events:none}
+  .hs-nadir img{display:block;border-radius:50%}
+
+  .gallery{display:flex;gap:9px;overflow-x:auto;padding:1px 1px 11px;scrollbar-width:thin;scroll-behavior:smooth}
+  .gallery::-webkit-scrollbar{height:5px}
+  .gallery::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:3px}
+  .thumb{flex:0 0 auto;width:120px;cursor:pointer;border-radius:11px;overflow:hidden;position:relative;
+    box-shadow:0 2px 10px rgba(0,0,0,.3);transition:transform .18s cubic-bezier(.22,.61,.36,1),box-shadow .18s}
+  .thumb:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+  .thumb::after{content:"";position:absolute;inset:0;border-radius:11px;border:2px solid transparent;transition:border-color .18s;pointer-events:none}
+  .thumb.active::after{border-color:var(--gold)}
+  .thumb.active{box-shadow:0 6px 18px rgba(255,255,255,.2)}
+  .thumb img{display:block;width:120px;height:68px;object-fit:cover}
+  .thumb .veil{position:absolute;inset:0;background:rgba(12,12,12,.34);transition:opacity .18s}
+  .thumb.active .veil,.thumb:hover .veil{opacity:0}
+  .thumb .cap{position:absolute;left:0;right:0;bottom:0;padding:14px 8px 6px;font-size:11.5px;font-weight:650;
+    background:linear-gradient(transparent,rgba(6,6,6,.82));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thumb.active .cap{color:var(--gold-bright)}
+  .thumb .num{position:absolute;top:6px;left:7px;font-size:10px;font-weight:800;color:rgba(255,255,255,.9);text-shadow:0 1px 3px rgba(0,0,0,.7)}
+
+  .bar{display:flex;align-items:center;justify-content:center;gap:4px;padding-top:9px;border-top:1px solid var(--hair)}
+  .bar button{width:40px;height:36px;border:none;border-radius:10px;cursor:pointer;background:transparent;
+    color:var(--paper);display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;position:relative}
+  .bar button svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .bar button:hover{background:rgba(255,255,255,.09)}
+  .bar button.on{color:var(--bg);background:var(--gold)}
+  .bar .sep{width:1px;height:20px;background:var(--hair);margin:0 6px}
+  .bar button[data-tip]:hover::before{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;
+    transform:translateX(-50%);background:var(--glass-strong);color:var(--paper);font-size:11px;font-weight:600;
+    padding:4px 9px;border-radius:7px;white-space:nowrap;border:1px solid var(--hair)}
+
+  /* 이동 핫스팟 = 위치 핀(지도 마커). Pannellum 이 이 요소에 transform 을 걸어
+     위치를 잡으므로 강조는 transform 대신 filter 로만 준다. */
+  .hs-move{width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.45));transition:filter .2s ease}
+  .hs-move svg{width:30px;height:30px;display:block;overflow:visible}
+  .hs-move:hover{filter:drop-shadow(0 3px 9px rgba(0,0,0,.6))}
+  /* 기본: 핀 색상 채움(터치 등 hover 없는 환경). hover 기기: 평소 반투명 링, 올리면 채움 */
+  .hs-move .pin-body{fill:var(--pin,#fff);stroke:#fff;stroke-width:2.5;transition:fill .2s ease,stroke .2s ease}
+  @media (hover:hover){
+    .hs-move:not(:hover) .pin-body{fill:transparent;stroke:rgba(255,255,255,.5)}
+  }
+  .hs-info{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+    border:1.5px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;
+    color:var(--paper);font-size:14px;font-weight:700;font-style:italic;cursor:pointer;transition:transform .15s,background .15s}
+  .hs-info:hover{transform:scale(1.14);background:#fff;color:#141414}
+  /* 핫스팟 라벨 — 핀 위쪽 중앙, 가로 한 줄. 라벨 span 은 핫스팟 div 의 직접 자식.
+     이동 핀 라벨은 항상 표시, 정보 라벨은 hover 시 표시. */
+  .hs-move span,.hs-info span{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);
+    margin:0 0 11px 0;white-space:nowrap;pointer-events:none;
+    font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:9px;
+    background:var(--glass-strong);border:1px solid var(--hair);color:var(--paper);box-shadow:0 6px 20px rgba(0,0,0,.45)}
+  .hs-move span:after,.hs-info span:after{content:'';position:absolute;top:100%;left:50%;margin-left:-5px;width:0;height:0;
+    border:5px solid transparent;border-top-color:var(--glass-strong)}
+  .hs-info span{visibility:hidden}
+  .hs-info:hover span{visibility:visible}
+
+  /* ===== 모바일 최적화: 도크·컨트롤·브랜드 크기 축소 ===== */
+  @media (max-width:640px){
+    .dock{width:96vw;bottom:54px;border-radius:15px;padding:9px 9px 7px}
+    .gallery{gap:7px;padding-bottom:9px}
+    .thumb{width:88px}
+    .thumb img{width:88px;height:50px}
+    .thumb .cap{font-size:10.5px;padding:11px 6px 5px}
+    .thumb .num{font-size:9px;top:5px;left:6px}
+    .bar{gap:2px;padding-top:7px}
+    .bar button{width:34px;height:32px;border-radius:8px}
+    .bar button svg{width:18px;height:18px}
+    .bar .sep{margin:0 4px}
+    .dock-toggle{bottom:11px;height:31px;padding:0 12px;font-size:11.5px}
+    .dock-toggle .dt-label{font-size:11.5px}
+    .brand-logo.top{top:12px;max-height:34px;max-width:120px}
+    .scene-label{left:15px;bottom:104px}
+    .scene-label .title{font-size:18px}
+    .brand-logo{max-height:36px;max-width:128px;left:13px;bottom:13px}
+    .hs-move{width:26px;height:26px}
+    .hs-move svg{width:26px;height:26px}
+    .hs-info{width:27px;height:27px;font-size:12px}
+    .hs-move span,.hs-info span{font-size:11.5px;padding:5px 10px}
+  }
+  /* 아주 좁은 화면(≤380px)에서 한 번 더 축소 */
+  @media (max-width:380px){
+    .thumb{width:76px}
+    .thumb img{width:76px;height:43px}
+    .bar button{width:31px;height:30px}
+    .scene-label .title{font-size:16px}
+  }
+</style>
+</head>
+<body>
+  <div class="scrim top"></div>
+  <div class="scrim bot"></div>
+  <div id="panorama"></div>
+
+  <!-- 좌측 상단 로고 (표시 전용. 이미지만 표시. 파일: images/brandmark.png) -->
+  <img class="brand-logo top" src="images/brandmark.png" alt="" onerror="this.style.display='none'">
+
+  <div class="scene-label"><div class="title" id="sceneName"></div></div>
+
+  <div class="dock" id="dock">
+    <div class="gallery" id="gallery"></div>
+    <div class="bar">
+      <button id="btnHome" data-tip="처음 시점"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></button>
+      <button id="btnRotate" data-tip="자동 회전"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg></button>
+      <span class="sep"></span>
+      <button id="btnPrev" data-tip="이전"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button id="btnNext" data-tip="다음"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      <span class="sep"></span>
+      <button id="btnFull" data-tip="전체화면"><svg viewBox="0 0 24 24"><path d="M8 3H3v5"/><path d="M16 3h5v5"/><path d="M16 21h5v-5"/><path d="M8 21H3v-5"/></svg></button>
+    </div>
+  </div>
+
+  <!-- 도크 열기/닫기 핸들 (접혔을 때 '둘러보기' 안내) -->
+  <button class="dock-toggle" id="dockToggle" title="갤러리 · 컨트롤 열기/닫기" aria-label="갤러리 열기/닫기">
+    <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    <span class="dt-label">둘러보기</span>
+    <svg class="chev" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>
+  </button>
+
+  <!-- 좌측 하단 로고 (표시 전용. 링크가 필요하면 <a href="..."> 로 감싸세요. 파일: images/logo.png) -->
+  <img class="brand-logo" src="images/logo.png" alt="" onerror="this.style.display='none'">
+
+<script>
+/* =====================================================================
+   ★ 여기만 편집하면 됩니다 ★
+
+   지점을 추가하려면 SCENES 배열에 블록을 하나 더 넣으세요.
+     id       : 씬 고유 이름(영문/숫자, 겹치면 안 됨)
+     name     : 화면에 표시될 한글 이름
+     image    : images/ 폴더 안 사진 경로 (equirectangular, 가로:세로 = 2:1)
+     yaw/pitch: 처음 바라보는 방향 (yaw 좌우 -180~180, pitch 상하 -90~90)
+     hotSpots : 이 씬에 얹을 핫스팟들
+        - move : 다른 씬으로 이동 (to = 대상 씬 id)
+        - info : 설명 툴팁
+
+   핫스팟 좌표(yaw/pitch)를 모를 땐: 뷰어를 띄우고 브라우저 콘솔에
+     viewer.on('mousedown', e => console.log(viewer.mouseEventToCoords(e)));
+   를 붙여넣은 뒤 원하는 지점을 클릭하면 [pitch, yaw] 가 찍힙니다.
+   ===================================================================== */
+/* __SCENES_START__ (에디터 내보내기 시 이 배열을 통째로 교체) */
+const SCENES = [
+  {
+    id: "eeobaunseu-1",
+    name: "에어바운스_1",
+    image: "images/01.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-130.7, pitch:-8.8, to:"eeobaunseu-3", text:"에어바운스_3" },
+      { type:"move", yaw:-69.9, pitch:-1.5, to:"eeobaunseu-2", text:"에어바운스_2" },
+    ]
+  },
+  {
+    id: "eeobaunseu-2",
+    name: "에어바운스_2",
+    image: "images/02.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:158.5, pitch:-9.8, to:"eeobaunseu-3", text:"에어바운스_3" },
+      { type:"move", yaw:58.9, pitch:0.9, to:"eeobaunseu-1", text:"에어바운스_1" },
+    ]
+  },
+  {
+    id: "eeobaunseu-3",
+    name: "에어바운스_3",
+    image: "images/03.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-97.1, pitch:-0.3, to:"oksangjeongwon", text:"옥상정원" },
+      { type:"move", yaw:135, pitch:-3, to:"eeobaunseu-1", text:"에어바운스_1" },
+      { type:"move", yaw:104.8, pitch:-3.7, to:"eeobaunseu-2", text:"에어바운스_2" },
+      { type:"move", yaw:-149.8, pitch:-9.2, to:"elribeiteo", text:"엘리베이터" },
+    ]
+  },
+  {
+    id: "oksangjeongwon",
+    name: "옥상정원",
+    image: "images/04.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-125.8, pitch:0.4, to:"eeobaunseu-3", text:"에어바운스_3" },
+    ]
+  },
+  {
+    id: "elribeiteo",
+    name: "엘리베이터",
+    image: "images/05.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:0.9, pitch:-6, to:"eeobaunseu-3", text:"에어바운스_3" },
+      { type:"move", yaw:1.4, pitch:-11.4, to:"mokyoktang-ipgu", text:"목욕탕 입구" },
+      { type:"move", yaw:1.9, pitch:-19.5, to:"jjimjilbang-5", text:"찜질방_5" },
+    ]
+  },
+  {
+    id: "bulhanjeungmak",
+    name: "불한증막",
+    image: "images/06.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "hinokkibang",
+    name: "히노끼방",
+    image: "images/07.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "aiseubang-2",
+    name: "아이스방_2",
+    image: "images/08.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "aiseubang-1",
+    name: "아이스방_1",
+    image: "images/09.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "mokyoktang-ipgu",
+    name: "목욕탕 입구",
+    image: "images/10.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-142.9, pitch:-7.6, to:"elribeiteo", text:"엘리베이터" },
+      { type:"move", yaw:50.3, pitch:-11.5, to:"namtang-bokdo-3", text:"남탕 복도_3" },
+      { type:"move", yaw:103.6, pitch:-8.4, to:"yeotang-bokdo-2", text:"여탕 복도_2" },
+    ]
+  },
+  {
+    id: "elribeiteo-2",
+    name: "엘리베이터_2",
+    image: "images/11.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:47.8, pitch:-10.7, to:"mokyoktang-ipgu-2", text:"목욕탕 입구_2" },
+      { type:"move", yaw:48.8, pitch:-29.2, to:"sinbaljang", text:"신발장" },
+      { type:"move", yaw:48.5, pitch:-20, to:"helseujang", text:"헬스장" },
+    ]
+  },
+  {
+    id: "sinbaljang",
+    name: "신발장",
+    image: "images/12.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-110.6, pitch:-6, to:"sinbaljang-2", text:"신발장_2" },
+      { type:"move", yaw:108.2, pitch:-15.1, to:"elribeiteo-2", text:"엘리베이터_2" },
+    ]
+  },
+  {
+    id: "sinbaljang-2",
+    name: "신발장_2",
+    image: "images/13.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:19.2, pitch:-12.2, to:"annaedeseukeu", text:"안내데스크" },
+      { type:"move", yaw:132, pitch:-5.8, to:"sinbaljang", text:"신발장" },
+    ]
+  },
+  {
+    id: "annaedeseukeu",
+    name: "안내데스크",
+    image: "images/14.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:74.2, pitch:-3.9, to:"ipgu", text:"입구" },
+      { type:"move", yaw:-146.8, pitch:-6.7, to:"sinbaljang-2", text:"신발장_2" },
+    ]
+  },
+  {
+    id: "ipgu",
+    name: "입구",
+    image: "images/15.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-168.7, pitch:-16.5, to:"juchajang", text:"주차장" },
+      { type:"move", yaw:52.6, pitch:-9.5, to:"annaedeseukeu", text:"안내데스크" },
+    ]
+  },
+  {
+    id: "juchajang",
+    name: "주차장",
+    image: "images/16.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-38.1, pitch:-5.1, to:"ipgu", text:"입구" },
+      { type:"move", yaw:-137, pitch:-7, to:"eeobaunseu-1", text:"에어바운스_1" },
+    ]
+  },
+  {
+    id: "juchajang-2",
+    name: "주차장_2",
+    image: "images/17.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-171.9, pitch:-7.4, to:"juchajang", text:"주차장" },
+      { type:"move", yaw:-78.5, pitch:-6.3, to:"juchajang-3", text:"주차장_3" },
+    ]
+  },
+  {
+    id: "juchajang-3",
+    name: "주차장_3",
+    image: "images/18.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-174.5, pitch:-2.5, to:"juchajang-2", text:"주차장_2" },
+      { type:"move", yaw:-82, pitch:-9.2, to:"juchajang-4", text:"주차장_4" },
+    ]
+  },
+  {
+    id: "juchajang-4",
+    name: "주차장_4",
+    image: "images/19.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-106.3, pitch:-7.2, to:"juchajang-3", text:"주차장_3" },
+      { type:"move", yaw:-16.4, pitch:-1.7, to:"ipgu", text:"입구" },
+    ]
+  },
+  {
+    id: "mokyoktang-ipgu-2",
+    name: "목욕탕 입구_2",
+    image: "images/20.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-2.8, pitch:-4, to:"yeotang-bokdo-5", text:"여탕 복도_5" },
+    ]
+  },
+  {
+    id: "nocheontang-ipgu",
+    name: "노천탕 입구",
+    image: "images/21.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:48.9, pitch:-13.1, to:"yeotang-4", text:"여탕_4" },
+      { type:"move", yaw:164.3, pitch:-16, to:"yeotang-nocheontang", text:"여탕 노천탕" },
+    ]
+  },
+  {
+    id: "yeotang-ipgu",
+    name: "여탕 입구",
+    image: "images/22.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-5.4, pitch:-18.1, to:"yeotang-paudeorum", text:"여탕 파우더룸" },
+      { type:"move", yaw:-89.2, pitch:-27.1, to:"yeotang", text:"여탕" },
+    ]
+  },
+  {
+    id: "yeotang-paudeorum",
+    name: "여탕 파우더룸",
+    image: "images/23.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "yeotang-bokdo",
+    name: "여탕 복도",
+    image: "images/24.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-178.2, pitch:-14, to:"yeotang-bokdo-2", text:"여탕 복도_2" },
+      { type:"move", yaw:6.2, pitch:-9, to:"yeotang-ipgu", text:"여탕 입구" },
+    ]
+  },
+  {
+    id: "yeotang-bokdo-2",
+    name: "여탕 복도_2",
+    image: "images/25.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-64.6, pitch:-18.2, to:"yeotang-bokdo-3", text:"여탕 복도_3" },
+      { type:"move", yaw:113.7, pitch:-11.3, to:"yeotang-bokdo", text:"여탕 복도" },
+      { type:"move", yaw:-145.5, pitch:-1.4, to:"mokyoktang-ipgu", text:"목욕탕 입구" },
+    ]
+  },
+  {
+    id: "yeotang-bokdo-3",
+    name: "여탕 복도_3",
+    image: "images/26.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-173.1, pitch:-13.2, to:"yeotang-bokdo-4", text:"여탕 복도_4" },
+      { type:"move", yaw:13.6, pitch:-10.9, to:"yeotang-bokdo-2", text:"여탕 복도_2" },
+    ]
+  },
+  {
+    id: "yeotang-bokdo-4",
+    name: "여탕 복도_4",
+    image: "images/27.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:155.7, pitch:-24, to:"yeotang-bokdo-5", text:"여탕 복도_5" },
+      { type:"move", yaw:-30.6, pitch:-12.9, to:"yeotang-bokdo-3", text:"여탕 복도_3" },
+    ]
+  },
+  {
+    id: "yeotang-bokdo-5",
+    name: "여탕 복도_5",
+    image: "images/28.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:166.2, pitch:-16.4, to:"yeotang-bokdo-4", text:"여탕 복도_4" },
+    ]
+  },
+  {
+    id: "yeotang",
+    name: "여탕",
+    image: "images/29.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:57.6, pitch:-11.2, to:"yeotang-sesinsil", text:"여탕 세신실" },
+    ]
+  },
+  {
+    id: "yeotang-sesinsil",
+    name: "여탕 세신실",
+    image: "images/30.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-99.5, pitch:-12, to:"yeotang", text:"여탕" },
+      { type:"move", yaw:-152.2, pitch:-4.1, to:"yeotang-2", text:"여탕_2" },
+    ]
+  },
+  {
+    id: "yeotang-2",
+    name: "여탕_2",
+    image: "images/31.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-127.3, pitch:-6.7, to:"yeotang-sesinsil", text:"여탕 세신실" },
+      { type:"move", yaw:6.7, pitch:-19.6, to:"yeotang-3", text:"여탕_3" },
+    ]
+  },
+  {
+    id: "yeotang-3",
+    name: "여탕_3",
+    image: "images/32.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-151.9, pitch:-26.4, to:"yeotang-2", text:"여탕_2" },
+    ]
+  },
+  {
+    id: "yeotang-4",
+    name: "여탕_4",
+    image: "images/33.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:116.8, pitch:-10.8, to:"yeotang-2", text:"여탕_2" },
+      { type:"move", yaw:45.6, pitch:-16.7, to:"yeotang-5", text:"여탕_5" },
+    ]
+  },
+  {
+    id: "yeotang-5",
+    name: "여탕_5",
+    image: "images/34.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:112, pitch:-17.1, to:"yeotang-seupsiksauna", text:"여탕 습식사우나" },
+      { type:"move", yaw:178.5, pitch:-15.5, to:"yeotang-geonsiksauna", text:"여탕 건식사우나" },
+    ]
+  },
+  {
+    id: "yeotang-6",
+    name: "여탕_6",
+    image: "images/35.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:58.3, pitch:-12.3, to:"yeotang", text:"여탕" },
+      { type:"move", yaw:124.1, pitch:-11.6, to:"yeotang-5", text:"여탕_5" },
+    ]
+  },
+  {
+    id: "yeotang-seupsiksauna",
+    name: "여탕 습식사우나",
+    image: "images/36.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "yeotang-geonsiksauna",
+    name: "여탕 건식사우나",
+    image: "images/37.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "yeotang-bogwanham",
+    name: "여탕 보관함",
+    image: "images/38.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:127.1, pitch:-23.9, to:"yeotang-nocheontang", text:"여탕 노천탕" },
+    ]
+  },
+  {
+    id: "yeotang-nocheontang",
+    name: "여탕 노천탕",
+    image: "images/39.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-3, pitch:-10.2, to:"yeotang-nocheontang-2", text:"여탕 노천탕_2" },
+      { type:"move", yaw:-44, pitch:-18.3, to:"yeotang-nocheontang-3", text:"여탕 노천탕_3" },
+      { type:"move", yaw:179.6, pitch:-22.2, to:"yeotang-bogwanham", text:"여탕 보관함" },
+    ]
+  },
+  {
+    id: "yeotang-nocheontang-2",
+    name: "여탕 노천탕_2",
+    image: "images/40.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "yeotang-nocheontang-3",
+    name: "여탕 노천탕_3",
+    image: "images/41.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:61.8, pitch:-19.4, to:"yeotang-nocheontang", text:"여탕 노천탕" },
+      { type:"move", yaw:-36.7, pitch:-15.2, to:"yeotang-nocheontang-2", text:"여탕 노천탕_2" },
+    ]
+  },
+  {
+    id: "namtang-bokdo",
+    name: "남탕 복도",
+    image: "images/42.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-9, pitch:-36.7, to:"mokyoktang-ipgu", text:"목욕탕 입구" },
+      { type:"move", yaw:66.1, pitch:-15.3, to:"namtang-bokdo-2", text:"남탕 복도_2" },
+    ]
+  },
+  {
+    id: "namtang-bokdo-2",
+    name: "남탕 복도_2",
+    image: "images/43.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:80.5, pitch:-12.8, to:"namtang-bokdo", text:"남탕 복도" },
+      { type:"move", yaw:-105.8, pitch:-5.7, to:"namtang-bokdo-3", text:"남탕 복도_3" },
+    ]
+  },
+  {
+    id: "namtang-bokdo-3",
+    name: "남탕 복도_3",
+    image: "images/44.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:18.4, pitch:-9.8, to:"namtang-bokdo-2", text:"남탕 복도_2" },
+      { type:"move", yaw:-165, pitch:-7.4, to:"namtang-ipgu", text:"남탕 입구" },
+      { type:"move", yaw:97.6, pitch:-3.5, to:"mokyoktang-ipgu", text:"목욕탕 입구" },
+    ]
+  },
+  {
+    id: "namtang-paudeorum",
+    name: "남탕 파우더룸",
+    image: "images/45.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "namtang-nocheontang",
+    name: "남탕 노천탕",
+    image: "images/46.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-138.8, pitch:-15.3, to:"namtang-nocheontang-2", text:"남탕 노천탕_2" },
+    ]
+  },
+  {
+    id: "namtang-nocheontang-2",
+    name: "남탕 노천탕_2",
+    image: "images/47.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-53.7, pitch:-16.9, to:"namtang-nocheontang", text:"남탕 노천탕" },
+      { type:"move", yaw:-123.3, pitch:-20, to:"namtang", text:"남탕" },
+    ]
+  },
+  {
+    id: "namtang",
+    name: "남탕",
+    image: "images/48.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:67.3, pitch:-14, to:"namtang-2", text:"남탕_2" },
+      { type:"move", yaw:176.4, pitch:-20.2, to:"namtang-4", text:"남탕_4" },
+      { type:"move", yaw:-132.4, pitch:-10, to:"namtang-nocheontang-2", text:"남탕 노천탕_2" },
+    ]
+  },
+  {
+    id: "namtang-2",
+    name: "남탕_2",
+    image: "images/49.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-21.3, pitch:-14.1, to:"namtang-3", text:"남탕_3" },
+      { type:"move", yaw:152.2, pitch:-12.4, to:"namtang", text:"남탕" },
+    ]
+  },
+  {
+    id: "namtang-3",
+    name: "남탕_3",
+    image: "images/50.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-98.7, pitch:-18.2, to:"namtang-ipgu", text:"남탕 입구" },
+      { type:"move", yaw:51.4, pitch:-18.5, to:"namtang-2", text:"남탕_2" },
+    ]
+  },
+  {
+    id: "namtang-4",
+    name: "남탕_4",
+    image: "images/51.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-24.3, pitch:-24.5, to:"namtang", text:"남탕" },
+      { type:"move", yaw:-122.1, pitch:-10.9, to:"namtang-geonsiksauna", text:"남탕 건식사우나" },
+      { type:"move", yaw:160.8, pitch:-3.4, to:"namtang-seupsiksauna", text:"남탕 습식사우나" },
+      { type:"move", yaw:95.9, pitch:-11.5, to:"namtang-sesinsil", text:"남탕 세신실" },
+    ]
+  },
+  {
+    id: "namtang-sesinsil",
+    name: "남탕 세신실",
+    image: "images/52.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "namtang-geonsiksauna",
+    name: "남탕 건식사우나",
+    image: "images/53.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:29.6, pitch:-35.8, to:"namtang-4", text:"남탕_4" },
+    ]
+  },
+  {
+    id: "namtang-seupsiksauna",
+    name: "남탕 습식사우나",
+    image: "images/54.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:158.2, pitch:-22.5, to:"yeotang-4", text:"여탕_4" },
+    ]
+  },
+  {
+    id: "namtang-ipgu",
+    name: "남탕 입구",
+    image: "images/55.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-25.4, pitch:-17.8, to:"namtang-paudeorum", text:"남탕 파우더룸" },
+      { type:"move", yaw:56.4, pitch:-10.2, to:"namtang-bokdo-3", text:"남탕 복도_3" },
+      { type:"move", yaw:-97.9, pitch:-13.7, to:"namtang-3", text:"남탕_3" },
+    ]
+  },
+  {
+    id: "sogeumbang",
+    name: "소금방",
+    image: "images/56.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:15.7, pitch:-10.8, to:"eeobaunseu-1", text:"에어바운스_1" },
+    ]
+  },
+  {
+    id: "jjimjilbang",
+    name: "찜질방",
+    image: "images/57.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:67.9, pitch:-17.4, to:"jjimjilbang-sikdang", text:"찜질방 식당" },
+    ]
+  },
+  {
+    id: "jjimjilbang-sikdang",
+    name: "찜질방 식당",
+    image: "images/58.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:65.3, pitch:-7.5, to:"jjimjilbang-sikdang-2", text:"찜질방 식당_2" },
+      { type:"move", yaw:139.5, pitch:-7, to:"jjimjilbang", text:"찜질방" },
+      { type:"move", yaw:-80.9, pitch:-10, to:"jjimjilbang-2", text:"찜질방_2" },
+    ]
+  },
+  {
+    id: "jjimjilbang-sikdang-2",
+    name: "찜질방 식당_2",
+    image: "images/59.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "jjimjilbang-2",
+    name: "찜질방_2",
+    image: "images/60.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:10.9, pitch:-14.7, to:"jjimjilbang-3", text:"찜질방_3" },
+      { type:"move", yaw:-105.7, pitch:-8.6, to:"jjimjilbang-hwajangsil", text:"찜질방 화장실" },
+      { type:"move", yaw:153.3, pitch:-6.3, to:"jjimjilbang-sikdang", text:"찜질방 식당" },
+      { type:"move", yaw:-163.1, pitch:-15.8, to:"jjimjilbang-8", text:"찜질방_8" },
+    ]
+  },
+  {
+    id: "jjimjilbang-kijeu-kape",
+    name: "찜질방 키즈 카페",
+    image: "images/61.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:39, pitch:-10.1, to:"jjimjilbang-kijeu-kape-2", text:"찜질방 키즈 카페_2" },
+      { type:"move", yaw:-56.2, pitch:-10.6, to:"jjimjilbang-8", text:"찜질방_8" },
+    ]
+  },
+  {
+    id: "jjimjilbang-kijeu-kape-2",
+    name: "찜질방 키즈 카페_2",
+    image: "images/62.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-102, pitch:-13.3, to:"jjimjilbang-kijeu-kape", text:"찜질방 키즈 카페" },
+    ]
+  },
+  {
+    id: "jjimjilbang-3",
+    name: "찜질방_3",
+    image: "images/63.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-146.2, pitch:-10.9, to:"jjimjilbang-8", text:"찜질방_8" },
+      { type:"move", yaw:-59.2, pitch:-16.1, to:"jjimjilbang-7", text:"찜질방_7" },
+      { type:"move", yaw:84.7, pitch:-5, to:"jjimjilbang-sumyeon-rilrekseu-jon", text:"찜질방 수면 릴렉스 존" },
+      { type:"move", yaw:178.7, pitch:-7.3, to:"jjimjilbang-sikdang", text:"찜질방 식당" },
+      { type:"move", yaw:-145.7, pitch:-19.4, to:"jjimjilbang-2", text:"찜질방_2" },
+    ]
+  },
+  {
+    id: "jjimjilbang-sumyeon-rilrekseu-jon",
+    name: "찜질방 수면 릴렉스 존",
+    image: "images/64.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-18.1, pitch:-9.1, to:"jjimjilbang-sumyeon-rilrekseu-jon-2", text:"찜질방 수면 릴렉스 존_2" },
+      { type:"move", yaw:-152.8, pitch:-18.6, to:"jjimjilbang-3", text:"찜질방_3" },
+    ]
+  },
+  {
+    id: "jjimjilbang-sumyeon-rilrekseu-jon-2",
+    name: "찜질방 수면 릴렉스 존_2",
+    image: "images/65.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-121.8, pitch:0.3, to:"jjimjilbang-kaepsyulhotel", text:"찜질방 캡슐호텔" },
+      { type:"move", yaw:24.3, pitch:-15.5, to:"jjimjilbang-sumyeon-rilrekseu-jon-3", text:"찜질방 수면 릴렉스 존_3" },
+      { type:"move", yaw:-75.1, pitch:-3, to:"jjimjilbang-sumyeon-rilrekseu-jon", text:"찜질방 수면 릴렉스 존" },
+    ]
+  },
+  {
+    id: "jjimjilbang-kaepsyulhotel",
+    name: "찜질방 캡슐호텔",
+    image: "images/66.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-167.7, pitch:-19.1, to:"jjimjilbang-sumyeon-rilrekseu-jon-2", text:"찜질방 수면 릴렉스 존_2" },
+    ]
+  },
+  {
+    id: "jjimjilbang-geimbang",
+    name: "찜질방 게임방",
+    image: "images/67.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-134.3, pitch:-11.2, to:"jjimjilbang-sumyeon-rilrekseu-jon-3", text:"찜질방 수면 릴렉스 존_3" },
+    ]
+  },
+  {
+    id: "jjimjilbang-sumyeon-rilrekseu-jon-3",
+    name: "찜질방 수면 릴렉스 존_3",
+    image: "images/68.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-140.2, pitch:-23.9, to:"jjimjilbang-geimbang", text:"찜질방 게임방" },
+      { type:"move", yaw:155.6, pitch:-13.8, to:"jjimjilbang-sumyeon-rilrekseu-jon-2", text:"찜질방 수면 릴렉스 존_2" },
+      { type:"move", yaw:-46.7, pitch:-14.4, to:"jjimjilbang-4", text:"찜질방_4" },
+    ]
+  },
+  {
+    id: "jjimjilbang-4",
+    name: "찜질방_4",
+    image: "images/69.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:142.6, pitch:-3.1, to:"helseujang-2", text:"헬스장_2" },
+      { type:"move", yaw:-35.1, pitch:-15.2, to:"jjimjilbang-5", text:"찜질방_5" },
+      { type:"move", yaw:75.3, pitch:-16.2, to:"bulhanjeungmak", text:"불한증막" },
+      { type:"move", yaw:-2.2, pitch:-6.6, to:"sogeumbang", text:"소금방" },
+      { type:"move", yaw:-130, pitch:-17.6, to:"jjimjilbang-sumyeon-rilrekseu-jon-3", text:"찜질방 수면 릴렉스 존_3" },
+    ]
+  },
+  {
+    id: "jjimjilbang-5",
+    name: "찜질방_5",
+    image: "images/70.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:73.9, pitch:-16.3, to:"hinokkibang", text:"히노끼방" },
+      { type:"move", yaw:6, pitch:-7, to:"aiseubang-1", text:"아이스방_1" },
+      { type:"move", yaw:160.8, pitch:-8.3, to:"jjimjilbang-4", text:"찜질방_4" },
+      { type:"move", yaw:-16.9, pitch:-14.5, to:"jjimjilbang-7", text:"찜질방_7" },
+      { type:"move", yaw:-147.6, pitch:-11.1, to:"elribeiteo", text:"엘리베이터" },
+    ]
+  },
+  {
+    id: "jjimjilbang-6",
+    name: "찜질방_6",
+    image: "images/71.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "jjimjilbang-7",
+    name: "찜질방_7",
+    image: "images/72.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:113.2, pitch:-17.5, to:"jjimjilbang-5", text:"찜질방_5" },
+      { type:"move", yaw:30, pitch:0, to:"jjimjilbang-jecheonyeok", text:"찜질방 제천역" },
+      { type:"move", yaw:-5.8, pitch:-10.3, to:"jjimjilbang-jambang", text:"찜질방 잠방" },
+      { type:"move", yaw:-56.3, pitch:-18.7, to:"jjimjilbang2", text:"찜질방" },
+      { type:"move", yaw:-163, pitch:-15.7, to:"jjimjilbang-3", text:"찜질방_3" },
+    ]
+  },
+  {
+    id: "jjimjilbang-jecheonyeok",
+    name: "찜질방 제천역",
+    image: "images/73.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:82.8, pitch:-29, to:"jjimjilbang-7", text:"찜질방_7" },
+    ]
+  },
+  {
+    id: "jjimjilbang-jambang",
+    name: "찜질방 잠방",
+    image: "images/74.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:2.3, pitch:-10.9, to:"jjimjilbang-7", text:"찜질방_7" },
+    ]
+  },
+  {
+    id: "jjimjilbang2",
+    name: "찜질방",
+    image: "images/75.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:33.8, pitch:-16.9, to:"jjimjilbang-7", text:"찜질방_7" },
+      { type:"move", yaw:-117.8, pitch:-13.5, to:"jjimjilbang-hwajangsil", text:"찜질방 화장실" },
+      { type:"move", yaw:133.3, pitch:-10.1, to:"jjimjilbang-8", text:"찜질방_8" },
+    ]
+  },
+  {
+    id: "jjimjilbang-hwajangsil",
+    name: "찜질방 화장실",
+    image: "images/76.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:146.1, pitch:-17.3, to:"jjimjilbang2", text:"찜질방" },
+    ]
+  },
+  {
+    id: "jjimjilbang-jambang-2",
+    name: "찜질방 잠방_2",
+    image: "images/77.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+    ]
+  },
+  {
+    id: "jjimjilbang-8",
+    name: "찜질방_8",
+    image: "images/78.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:97.7, pitch:-9.4, to:"jjimjilbang2", text:"찜질방" },
+      { type:"move", yaw:-77.1, pitch:-5.4, to:"jjimjilbang-kijeu-kape", text:"찜질방 키즈 카페" },
+      { type:"move", yaw:-172.2, pitch:-19.1, to:"jjimjilbang-3", text:"찜질방_3" },
+    ]
+  },
+  {
+    id: "helseujang",
+    name: "헬스장",
+    image: "images/79.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:117.9, pitch:-9.6, to:"elribeiteo", text:"엘리베이터" },
+      { type:"move", yaw:-127.7, pitch:-6.9, to:"helseujang-2", text:"헬스장_2" },
+    ]
+  },
+  {
+    id: "helseujang-2",
+    name: "헬스장_2",
+    image: "images/80.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:-5.4, pitch:-5.2, to:"helseujang", text:"헬스장" },
+      { type:"move", yaw:-65.6, pitch:-11.3, to:"jjimjilbang-4", text:"찜질방_4" },
+      { type:"move", yaw:-117.1, pitch:-12.2, to:"helseujang-3", text:"헬스장_3" },
+    ]
+  },
+  {
+    id: "helseujang-3",
+    name: "헬스장_3",
+    image: "images/81.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:86.6, pitch:-14.5, to:"helseujang-4", text:"헬스장_4" },
+      { type:"move", yaw:-4.6, pitch:-12.3, to:"helseujang-2", text:"헬스장_2" },
+    ]
+  },
+  {
+    id: "helseujang-4",
+    name: "헬스장_4",
+    image: "images/82.jpg",
+    yaw: 0, pitch: -4, hfov: 100,
+    hotSpots: [
+      { type:"move", yaw:17, pitch:-8.5, to:"helseujang-2", text:"헬스장_2" },
+    ]
+  },
+];
+
+/* ---------- 이하 로직 (수정 불필요) ---------- */
+const DOCK_DEFAULT_OPEN = false;   // 하단 도크 기본 상태: false=접힘(핸들만), true=펼침
+/* 씬 이동 모션 튜닝값 — 부드럽게(값이 클수록 완만) */
+const MOVE_PUSH_HFOV = 60;   // 밀고 들어가는 줌 정도(100=줌없음, 작을수록 확 들어감). 도착 씬도 이 값으로 등장해 튐 방지
+const MOVE_PUSH_MS   = 600;  // 밀고 들어가는 시간(ms)
+const MOVE_FADE_MS   = 700;  // 씬 크로스페이드 시간(ms)
+const MOVE_SETTLE_MS = 950;  // 도착 후 원래 줌으로 천천히 안정되는 시간(ms)
+const LOGO_LINK = "";        // 좌하단 로고 클릭 시 열 URL(에디터 설정에서 주입, 비우면 클릭 없음)
+/* 원형 핀: 바깥 투명 원=클릭 영역, 안쪽 .pin-body=보이는 링(평소 반투명, 호버 시 채움) */
+const PIN='<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="transparent"/><circle class="pin-body" cx="17" cy="17" r="11"/></svg>';
+let viewer, cur=0, rotating=false;
+
+function buildConfig(){
+  const cfg={ default:{ firstScene:SCENES[0].id, sceneFadeDuration:MOVE_FADE_MS, autoLoad:true, showControls:false, hfov:100 }, scenes:{} };
+  SCENES.forEach(s=>{
+    const spots=(s.hotSpots||[]).map(h=>{
+      if(h.type==="move") return { yaw:h.yaw, pitch:h.pitch, cssClass:"hs-move", scale:true,
+        createTooltipFunc:moveHS, createTooltipArgs:h.text||"이동",
+        clickHandlerFunc:onMoveClick, clickHandlerArgs:{ to:h.to, faceYaw:h.yaw, facePitch:h.pitch } };
+      return { yaw:h.yaw, pitch:h.pitch, cssClass:"hs-info", scale:true, createTooltipFunc:infoHS, createTooltipArgs:h.text||"" };
+    });
+    if(s.nadir && s.nadir.image) spots.push(nadirSpot(s.nadir));
+    cfg.scenes[s.id]={ type:"equirectangular", panorama:s.image, yaw:s.yaw??0, pitch:s.pitch??0, hfov:s.hfov??100, hotSpots:spots };
+  });
+  return cfg;
+}
+/* 나디르: 바닥 정중앙(pitch=-90)에 고정, 줌에 따라 스케일되는 원형 이미지 */
+function nadirSpot(n){ return { yaw:0, pitch:-90, cssClass:"hs-nadir", scale:true,
+  createTooltipFunc:nadirHS, createTooltipArgs:n }; }
+function nadirHS(div,n){ div.classList.add('hs-nadir');
+  const img=document.createElement('img'); img.src=n.image; img.alt=''; img.onerror=()=>{div.style.display='none';};
+  const sz=n.size||340, op=(n.opacity==null?1:n.opacity), rot=n.rotation||0;
+  img.style.cssText='width:'+sz+'px;height:'+sz+'px;border-radius:50%;display:block;opacity:'+op+';transform:rotate('+rot+'deg)';
+  div.appendChild(img); }
+
+function buildGallery(){
+  const g=document.getElementById('gallery');
+  SCENES.forEach((s,i)=>{
+    const d=document.createElement('div'); d.className='thumb'+(i===0?' active':''); d.dataset.id=s.id;
+    const img=document.createElement('img'); img.src=s.image; img.alt=s.name; img.loading='lazy';
+    const veil=document.createElement('div'); veil.className='veil';
+    const cap=document.createElement('div'); cap.className='cap'; cap.textContent=s.name;
+    const num=document.createElement('div'); num.className='num'; num.textContent=String(i+1).padStart(2,'0');
+    d.append(img,veil,cap,num); d.addEventListener('click',()=>goTo(s.id)); g.appendChild(d);
+  });
+}
+
+function start(){
+  buildGallery();
+  viewer=pannellum.viewer('panorama', buildConfig());
+  document.getElementById('sceneName').textContent=SCENES[0].name;
+  viewer.on('scenechange',id=>{
+    const idx=SCENES.findIndex(s=>s.id===id); cur=idx;
+    document.getElementById('sceneName').textContent=SCENES[idx].name;
+    document.querySelectorAll('.thumb').forEach(t=>t.classList.toggle('active',t.dataset.id===id));
+    const at=document.querySelector('.thumb.active'); if(at)at.scrollIntoView({inline:'center',block:'nearest'});
+    if(traveling){                                   // 도착 씬에서 원래 줌으로 천천히 안정(도착감)
+      viewer.lookAt(SCENES[idx].pitch??-4, viewer.getYaw(), SCENES[idx].hfov??100, MOVE_SETTLE_MS);
+      traveling=false;
+    }
+    if(rotating)viewer.startAutoRotate(-3);
+  });
+  wireControls();
+  wireDock();
+  wireLogoLink();
+}
+/* 좌하단 로고에 링크가 지정돼 있으면 클릭 시 새 탭으로 열기 */
+function wireLogoLink(){
+  const lg=document.querySelector('.brand-logo:not(.top)');
+  if(lg && LOGO_LINK){ lg.style.pointerEvents='auto'; lg.style.cursor='pointer';
+    lg.addEventListener('click',function(){ window.open(LOGO_LINK,'_blank','noopener'); }); }
+}
+/* 하단 도크 접기/펼치기 (세션 동안만 상태 유지) */
+function wireDock(){
+  const dock=document.getElementById('dock'), tog=document.getElementById('dockToggle');
+  const lbl=tog.querySelector('.dt-label');
+  let open=DOCK_DEFAULT_OPEN;
+  const apply=()=>{ dock.classList.toggle('collapsed',!open); tog.classList.toggle('open',open);
+    if(lbl) lbl.textContent = open ? '접기' : '둘러보기'; };
+  apply();
+  tog.onclick=()=>{ open=!open; apply(); };
+}
+/* ===== 이동 모션 (스트리트뷰식 — 부드럽게 밀고 들어가 도착) =====
+   1) 핫스팟 방향으로 회전하며 완만히 줌인(밀려 들어가는 느낌, 이징)
+   2) 다음 씬을 같은 줌(MOVE_PUSH_HFOV)으로 로드 → 줌 튐 없이 크로스페이드
+   3) scenechange 에서 원래 줌으로 천천히 물러나며 안정(도착감)
+   핵심: 1)에서 끝난 줌과 2)의 등장 줌을 같게 맞춰 '띡' 하는 끊김을 없앰. */
+let traveling=false;
+function travelTo(id, faceYaw, facePitch){
+  if(!viewer || traveling || id===SCENES[cur].id) return;
+  traveling=true;
+  const p = (facePitch!==undefined&&facePitch!==null) ? facePitch : viewer.getPitch();
+  const y = (faceYaw   !==undefined&&faceYaw   !==null) ? faceYaw   : viewer.getYaw();
+  // 1) 방향으로 회전하며 완만히 줌인 → 끝나면 2) 같은 줌으로 씬 로드
+  viewer.lookAt(p, y, MOVE_PUSH_HFOV, MOVE_PUSH_MS, function(){
+    const s = SCENES.find(x=>x.id===id);
+    viewer.loadScene(id, s.pitch??-4, s.yaw??0, MOVE_PUSH_HFOV);   // 같은 줌으로 등장(튐 방지)
+  });
+}
+function onMoveClick(evt, args){ travelTo(args.to, args.faceYaw, args.facePitch); }
+/* 갤러리·이전/다음 버튼도 같은 모션 사용(방향은 현재 시점 기준) */
+function goTo(id){ travelTo(id); }
+function wireControls(){
+  document.getElementById('btnHome').onclick=()=>{const s=SCENES[cur];viewer.setPitch(s.pitch??-4);viewer.setYaw(s.yaw??0);viewer.setHfov(s.hfov??100);};
+  document.getElementById('btnPrev').onclick=()=>goTo(SCENES[(cur-1+SCENES.length)%SCENES.length].id);
+  document.getElementById('btnNext').onclick=()=>goTo(SCENES[(cur+1)%SCENES.length].id);
+  const rot=document.getElementById('btnRotate');
+  rot.onclick=()=>{rotating=!rotating;rot.classList.toggle('on',rotating);if(rotating)viewer.startAutoRotate(-3);else viewer.stopAutoRotate();};
+  document.getElementById('btnFull').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.();};
+}
+/* 라벨은 CSS(.pnlm-tooltip span)가 핀 위쪽 중앙에 가로로 배치 */
+function infoHS(div,text){div.classList.add('hs-info');div.innerHTML='i';
+  const t=document.createElement('span');t.textContent=text;div.appendChild(t);}
+function moveHS(div,text){div.classList.add('hs-move');div.innerHTML=PIN;
+  const t=document.createElement('span');t.textContent=text;div.appendChild(t);}
+
+start();
+</script>
+</body>
+</html>
