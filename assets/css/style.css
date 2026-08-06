@@ -655,6 +655,13 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   text-align:left; padding:11px 18px; font-size:15px; font-weight:600; color:var(--ink);
   border-bottom:1px solid var(--line-2);
 }
+/* 표 중간의 소분류 줄 (음료 · 주류 등) */
+.mtbl tbody tr.mtbl__div th{
+  padding:22px 18px 7px; border-bottom:1px solid var(--ink);
+  font-size:12px; font-weight:800; letter-spacing:.16em; color:var(--brand-dp);
+}
+.mtbl tbody tr.mtbl__div:first-child th{padding-top:0}
+
 /* 메뉴판에 적힌 토핑·조건 설명 — 이름 아래 한 단 작게 */
 .mtbl tbody th span{
   display:block; margin-top:3px; font-size:12px; font-weight:500;

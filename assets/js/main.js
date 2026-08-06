@@ -650,6 +650,11 @@
         ? '<div class="tablewrap mtblwrap"><table class="mtbl">' +
             '<thead><tr><th>메뉴</th><th>판매가</th></tr></thead><tbody>' +
             g.items.map(function (it) {
+              /* { divider: "주류" } 처럼 적으면 표 중간에 소분류 줄이 들어갑니다 */
+              if (it.divider) {
+                return '<tr class="mtbl__div"><th colspan="2" scope="colgroup">' +
+                  it.divider + '</th></tr>';
+              }
               return '<tr><th scope="row">' + it.name +
                 /* 피자 토핑처럼 메뉴판에 적힌 설명은 이름 아래 작게 */
                 (it.sub ? '<span>' + it.sub + '</span>' : '') +
