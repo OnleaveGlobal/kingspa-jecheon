@@ -32,13 +32,25 @@
     var btns = Array.prototype.slice.call(dots.querySelectorAll('button'));
 
     function mark() {
-      /* 왼쪽 끝에서 가장 가까운 칸을 「지금 보는 칸」으로 봅니다 */
       var x = track.scrollLeft;
-      var near = 0, best = Infinity;
-      items.forEach(function (el, i) {
-        var d = Math.abs(el.offsetLeft - track.offsetLeft - x);
-        if (d < best) { best = d; near = i; }
-      });
+      var max = track.scrollWidth - track.clientWidth;
+      var near;
+
+      if (x >= max - 2) {
+        /* 끝까지 민 상태. 마지막 칸은 왼쪽 끝까지 올 수 없어서
+           거리로만 재면 끝의 한두 칸 앞에서 멈춥니다 — 여기서는 마지막으로 못박습니다 */
+        near = items.length - 1;
+      } else if (x <= 2) {
+        near = 0;
+      } else {
+        /* 그 밖에는 왼쪽 끝에서 가장 가까운 칸 */
+        near = 0;
+        var best = Infinity;
+        items.forEach(function (el, i) {
+          var d = Math.abs(el.offsetLeft - track.offsetLeft - x);
+          if (d < best) { best = d; near = i; }
+        });
+      }
       btns.forEach(function (b, i) { b.classList.toggle('is-on', i === near); });
     }
 
