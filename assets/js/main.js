@@ -20,6 +20,10 @@
     $$('[data-address]').forEach(function (el) { el.textContent = i.address; });
     $$('[data-address-old]').forEach(function (el) { el.textContent = '지번 : ' + i.addressOld; });
     $$('[data-ceo]').forEach(function (el) { el.textContent = i.ceo || '-'; });
+    $$('[data-corp]').forEach(function (el) {
+      if (i.corpName) { el.textContent = i.corpName; el.hidden = false; }
+      else { el.hidden = true; }
+    });
     $$('[data-hours]').forEach(function (el) { el.textContent = i.hours; });
     $$('[data-map-naver]').forEach(function (el) { el.setAttribute('href', i.naverMapUrl); });
     $$('[data-map-kakao]').forEach(function (el) { el.setAttribute('href', i.kakaoMapUrl); });

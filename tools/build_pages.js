@@ -151,7 +151,7 @@ function mobilebarHtml(data, slug) {
   ].filter(Boolean).join('\n') + '\n</div>';
 }
 
-function shell({ slug, title, desc, body, jsonld, nav, mobilebar }) {
+function shell({ slug, title, desc, body, jsonld, nav, mobilebar, data }) {
   const url = `${SITE}/${slug}/`;
   const full = `${title} | 제천킹스파찜질방`;
   return `<!DOCTYPE html>
@@ -233,8 +233,10 @@ ${body}
       <img class="brand__wm" src="/assets/img/wordmark-light.png" alt="제천킹스파찜질방" width="734" height="96">
     </div>
     <div class="ft__meta">
-      <p>충북 제천시 풍양로9길 5</p>
-      <p>대표 김동술 &nbsp;·&nbsp; TEL. <a href="tel:043-646-5200">043-646-5200</a></p>
+      <p class="ft__corp">${data.info.corpName || ''}</p>
+      <p>${data.info.address}</p>
+      <p>대표 ${data.info.ceo} &nbsp;·&nbsp; TEL. <a href="tel:${data.info.tel}">${data.info.tel}</a></p>
+      <p>사업자등록번호 ${data.info.bizNumber}</p>
       <nav class="ft__nav" aria-label="사이트 안내">
 ${PAGES.map((p) => `        <a href="/${p.slug}/">${p.nav}</a>`).join('\n')}
       </nav>
@@ -268,6 +270,8 @@ function business(data) {
     '@id': BIZ_ID,
     name: i.name,
     alternateName: i.shortName,
+    legalName: i.corpName || undefined,
+    taxID: i.bizNumber || undefined,
     url: SITE + '/',
     telephone: '+82-43-646-5200',
     address: {
@@ -499,7 +503,7 @@ function tidy(html) {
     const html = shell({
       slug: p.slug, title: p.title, desc: p.desc,
       body: tidy(body), jsonld: jsonldFor(p, data, TODAY), nav: navHtml(p.slug),
-      mobilebar: mobilebarHtml(data, p.slug),
+      mobilebar: mobilebarHtml(data, p.slug), data,
     });
     const dir = path.join(ROOT, p.slug);
     fs.mkdirSync(dir, { recursive: true });

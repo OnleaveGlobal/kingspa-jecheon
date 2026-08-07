@@ -1068,6 +1068,9 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .ft__brand .brand__mark{height:52px}
 .ft__brand .brand__wm{height:21px}
 .ft__meta{font-size:14px; line-height:1.4; color:rgba(240,234,227,.72)}
+/* 법인명 — 사업자 정보 묶음의 첫 줄 */
+.ft__corp{font-weight:700; color:rgba(240,234,227,.9); margin-bottom:3px}
+.ft__corp:empty{display:none}
 .ft__meta a{border-bottom:1px solid rgba(240,234,227,.3)}
 /* 섹션별 페이지로 가는 통로 */
 .ft__nav{display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:12px}
