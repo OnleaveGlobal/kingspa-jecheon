@@ -219,9 +219,9 @@ ${body}
       <p class="cta__lead">궁금한 점이 있으신가요?</p>
       <p class="cta__sub">언제 전화하셔도 됩니다. 24시간 사람이 있습니다.</p>
     </div>
-    <a class="cta__btn" href="tel:0507-1385-4604">
+    <a class="cta__btn" href="tel:043-646-5200">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/></svg>
-      <span>0507-1385-4604</span>
+      <span>043-646-5200</span>
     </a>
   </div>
 </section>
@@ -234,7 +234,7 @@ ${body}
     </div>
     <div class="ft__meta">
       <p>충북 제천시 풍양로9길 5</p>
-      <p>대표 김동술 &nbsp;·&nbsp; TEL. <a href="tel:0507-1385-4604">0507-1385-4604</a></p>
+      <p>대표 김동술 &nbsp;·&nbsp; TEL. <a href="tel:043-646-5200">043-646-5200</a></p>
       <nav class="ft__nav" aria-label="사이트 안내">
 ${PAGES.map((p) => `        <a href="/${p.slug}/">${p.nav}</a>`).join('\n')}
       </nav>
@@ -269,7 +269,7 @@ function business(data) {
     name: i.name,
     alternateName: i.shortName,
     url: SITE + '/',
-    telephone: '+82-507-1385-4604',
+    telephone: '+82-43-646-5200',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '풍양로9길 5',
