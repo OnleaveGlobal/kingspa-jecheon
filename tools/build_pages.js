@@ -125,7 +125,33 @@ function navHtml(current) {
   return items.join('\n');
 }
 
-function shell({ slug, title, desc, body, jsonld, nav }) {
+/* 모바일 하단 고정 바 — 랜딩페이지와 똑같이 모든 섹션 페이지에도 답니다.
+   메뉴로 들어왔는데 하단 바가 사라지면 다음 이동 수단이 없어집니다.
+   물놀이가 시즌 종료(show:false)면 그 칸을 빼고 네 칸으로 만듭니다. */
+function mobilebarHtml(data, slug) {
+  const on = !!(data.waterslide && data.waterslide.show);
+  const ico = {
+    map: 'M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5',
+    price: 'M4 4h16v2H4zm0 5h16v2H4zm0 5h10v2H4zm0 5h10v2H4z',
+    facil: 'M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z',
+    water: 'M4 18c1.6 0 1.6 1.2 3.2 1.2S8.8 18 10.4 18s1.6 1.2 3.2 1.2S15.2 18 16.8 18s1.6 1.2 3.2 1.2V21c-1.6 0-1.6-1.2-3.2-1.2S15.2 21 13.6 21s-1.6-1.2-3.2-1.2S8.8 21 7.2 21 5.6 19.8 4 19.8zm3-3V6a3 3 0 0 1 6 0h-2a1 1 0 0 0-2 0v9zm7 0V9h6v6z',
+    menu: 'M7 2v8a3 3 0 0 0 2 2.8V22h2V12.8A3 3 0 0 0 13 10V2h-1.6v6.4H10.4V2H9.6v6.4H8.6V2zm10 0c-1.7 0-3 2.7-3 6 0 2.4.7 4.3 1.8 5.2V22h2V2z',
+  };
+  const item = (href, d, label, extra = '', ext = false) =>
+    `  <a href="${href}"${ext ? ' target="_blank" rel="noopener"' : ''}${slug && href === `/${slug}/` ? ' aria-current="page"' : ''}>\n` +
+    `    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>\n` +
+    `    ${label}${extra}\n  </a>`;
+
+  return `<div class="mobilebar${on ? '' : ' mobilebar--4'}">\n` + [
+    item(data.info.naverMapUrl, ico.map, '길찾기', '', true),
+    item('/pricing/', ico.price, '이용요금'),
+    item('/facilities/', ico.facil, '시설안내'),
+    on ? item('/waterslide/', ico.water, '물놀이', '<span class="dot-new"></span>') : null,
+    item('/menu/', ico.menu, '식당'),
+  ].filter(Boolean).join('\n') + '\n</div>';
+}
+
+function shell({ slug, title, desc, body, jsonld, nav, mobilebar }) {
   const url = `${SITE}/${slug}/`;
   const full = `${title} | 제천킹스파찜질방`;
   return `<!DOCTYPE html>
@@ -221,7 +247,10 @@ ${PAGES.map((p) => `        <a href="/${p.slug}/">${p.nav}</a>`).join('\n')}
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6l7 7-1.4 1.4L13 9.8V20h-2V9.8l-4.6 4.6L5 13z"/></svg>
 </button>
 
+${mobilebar}
+
 <script src="/assets/js/page.js"></script>
+<script src="/assets/js/hscroll.js"></script>
 </body>
 </html>
 `;
@@ -470,6 +499,7 @@ function tidy(html) {
     const html = shell({
       slug: p.slug, title: p.title, desc: p.desc,
       body: tidy(body), jsonld: jsonldFor(p, data, TODAY), nav: navHtml(p.slug),
+      mobilebar: mobilebarHtml(data, p.slug),
     });
     const dir = path.join(ROOT, p.slug);
     fs.mkdirSync(dir, { recursive: true });

@@ -39,8 +39,5 @@
 .ft__nav a{font-size:13px; color:rgba(240,234,227,.72)}
 .ft__nav a:hover{color:#fff; text-decoration:underline}
 
-/* 섹션 페이지에는 하단 고정 바가 없으므로 아래 여백을 되돌립니다 */
-@media (max-width:1079px){
-  .subpage{padding-bottom:0}
-  .subpage .totop{bottom:18px; right:18px}
-}
+/* 섹션 페이지에도 랜딩페이지와 같은 하단 고정 바가 있으므로
+   본문 아래 여백과 「맨 위로」 위치는 style.css 기본값을 그대로 씁니다 */

@@ -112,7 +112,9 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 
 @media (max-width:1079px){
   .gnb{
-    position:fixed; top:calc(var(--hd) + 32px); left:0; right:0;
+    /* 헤더 바로 아래에 붙입니다 — 32px 를 띄우면 그 틈으로 뒤 사진이 비쳐
+       메뉴가 붕 떠 보입니다 */
+    position:fixed; top:var(--hd); left:0; right:0;
     display:flex; flex-direction:column; gap:0;
     background:#fff; border-bottom:2px solid var(--brand);
     padding:4px 20px 14px; box-shadow:0 14px 28px rgba(44,38,32,.12);
@@ -368,10 +370,15 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .sec > .container:not(.sec__grid) > .shd .shd__sub{grid-column:2; align-self:end; margin-top:0}
 
 
+/* 소제목 — 바로 아래 항목들을 거느립니다.
+   위는 넓게 띄워 앞 내용과 끊고, 아래는 붙이고 밑줄을 그어
+   "이 줄부터 이 제목에 속한다"가 보이게 합니다 */
 .sub{
   font-family:var(--f-head);
   font-size:19px; font-weight:800; letter-spacing:-.01em; color:var(--ink);
-  margin:36px 0 16px;
+  margin:clamp(40px,5vw,56px) 0 0;
+  padding-bottom:11px;
+  border-bottom:2px solid var(--ink);
 }
 
 /* ---------- 버튼 ---------- */
@@ -395,6 +402,8 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .tour__hd{
   display:flex; align-items:center; gap:10px;
   margin:0 0 6px; padding-top:clamp(26px,3vw,36px); border-top:1px solid var(--line);
+  /* .sub 의 아래 밑줄은 여기서 쓰지 않습니다 — 위에 이미 구분선이 있어 두 줄이 됩니다 */
+  padding-bottom:0; border-bottom:0;
 }
 .tour__char{flex:0 0 auto; width:auto; height:52px; margin:-8px 0; pointer-events:none; user-select:none}
 .tour__desc{font-size:14.5px; color:var(--ink-2); margin-bottom:18px; word-break:keep-all}
@@ -577,6 +586,21 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .facil__d{font-size:14px; color:var(--ink-2); line-height:1.4; margin-top:8px; word-break:keep-all}
 .facil__d b{color:var(--brand-dp); font-weight:700}
 
+/* ---------- 옆으로 미는 목록의 점 표시 ----------
+   좁은 화면에서만 나옵니다. 넓은 화면에서는 목록이 전부 펼쳐지므로 필요 없습니다 */
+.hsdots{display:none}
+@media (max-width:640px){
+  .hsdots{
+    display:flex; justify-content:center; flex-wrap:wrap; gap:7px;
+    margin-top:14px; padding:0 16px;
+  }
+  .hsdots button{
+    display:block; width:7px; height:7px; padding:0; border-radius:50%;
+    background:var(--line); border:0; transition:background .2s, width .2s;
+  }
+  .hsdots button.is-on{background:var(--brand-dk); width:20px; border-radius:4px}
+}
+
 .herbtable{margin-top:11px; font-size:12px; text-align:center; border:0}
 .herbtable th{background:none; color:#4a8a5f; padding:0 2px 5px; font-weight:700}
 .herbtable td{padding:4px 2px; border:0; color:var(--ink-2)}
@@ -740,7 +764,8 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .wsinfo dd{color:var(--ink-2)}
 
 /* 안전 수칙 — 상자도 선도 없이 글씨 색으로만 구분합니다 */
-.wssafe{margin-top:30px; border:0; background:none; padding:0}
+/* 위 표(이용요금·복장)와 붙어 한 덩어리로 읽혀서 넉넉히 띄웁니다 */
+.wssafe{margin-top:clamp(44px,5vw,64px); border:0; background:none; padding:0}
 .wssafe:empty{display:none}
 .wssafe__hd{
   font-size:15px; font-weight:800; letter-spacing:-.03em; color:var(--brand-dp);
@@ -768,7 +793,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   .wsinfo div{padding:9px 0; font-size:13.5px}
   .wsinfo dt{flex:0 0 62px}
 
-  .wssafe{margin-top:22px; padding:0}
+  .wssafe{margin-top:36px; padding:0}
   .wssafe__hd{font-size:14px; padding-bottom:9px; margin-bottom:11px}
   .wssafe ul{gap:10px}
   /* 제목을 윗줄에 따로 세우면 항목마다 한 줄씩 늘어납니다 — 이어서 씁니다 */
@@ -810,6 +835,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .extras__value{color:var(--ink-2)}
 
 .passes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; background:none; border:0}
+.sub + .passes{margin-top:6px}
 .pass{position:relative; text-align:center; padding:22px 14px; background:none}
 .pass + .pass{border-left:1px solid var(--line)}
 .pass h4{font-family:var(--f-head); font-size:17px; font-weight:800; letter-spacing:-.01em; color:var(--ink)}
@@ -1182,7 +1208,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   .ptbl tbody td.is-main{font-size:18.5px}
 
   /* 부대요금 · 횟수권 카드도 같은 비율로 */
-  .sub{font-size:16px; margin:20px 0 10px}
+  .sub{font-size:16px; margin:32px 0 0; padding-bottom:9px}
   .extras{margin-top:12px}
   .extras li{padding:10px 14px; gap:12px; font-size:13px}
   .extras__label{min-width:64px}
@@ -1202,7 +1228,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   /* 좁은 화면에서는 표를 접어 항목별 묶음으로 — 구분선은 행 하나로 통일 */
   .dtbl, .dtbl tbody, .dtbl tr, .dtbl th, .dtbl td{display:block; width:100%}
   .dtbl{margin-top:16px}
-  .steps + .dtbl{margin-top:32px}
+  .steps + .dtbl{margin-top:44px}
   .dtbl tr{border-bottom:1px solid var(--line)}
   .dtbl tr:last-child{border-bottom:0}
   .dtbl th{
