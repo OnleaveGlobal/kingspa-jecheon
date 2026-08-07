@@ -692,8 +692,15 @@
 
     var note = $('#menuNote');
     if (note) {
+      var biz = m.business;
       note.innerHTML = (m.note || '') +
-        (m.origin ? '<span class="cnote__credit">' + m.origin + '</span>' : '');
+        (m.origin ? '<span class="cnote__credit">' + m.origin + '</span>' : '') +
+        /* 식당은 찜질방과 사업자가 다릅니다 — 음식·주류를 파는 주체를 밝힙니다 */
+        (biz ? '<span class="cnote__credit">식당 운영 ' + biz.name +
+               ' · 대표 ' + biz.ceo +
+               ' · 사업자등록번호 ' + biz.bizNumber +
+               (biz.liquorNumber ? ' · 주류판매신고번호 ' + biz.liquorNumber : '') +
+               '</span>' : '');
     }
   }
 
