@@ -162,14 +162,8 @@
     box.innerHTML =
       '<img class="hyg__badge" src="' + h.badge + '" alt="' + esc(h.badgeAlt || '') + '" loading="lazy">' +
       '<div class="hyg__bd">' +
-        (h.eyebrow ? '<span class="hyg__eyebrow">' + h.eyebrow + '</span>' : '') +
         '<p class="hyg__t">' + h.title + '</p>' +
         '<p class="hyg__d">' + h.desc + '</p>' +
-        ((h.items || []).length
-          ? '<ul class="hyg__list">' +
-            h.items.map(function (t) { return '<li>' + t + '</li>'; }).join('') +
-            '</ul>'
-          : '') +
       '</div>';
   }
 
