@@ -825,6 +825,14 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 }
 .ptbl tbody td.is-main{font-size:24px; font-weight:800; color:var(--brand-dp)}
 
+/* 소인 기준 안내 — 결제 금액이 달라지는 내용이라 보통 주석보다 눈에 띄게 */
+#priceChildNote{
+  margin-top:16px; padding:11px 14px;
+  background:var(--brand-lt); border:1px solid var(--brand-bd);
+  font-size:14px; font-weight:700; color:var(--brand-dp); word-break:keep-all;
+}
+@media (max-width:640px){ #priceChildNote{font-size:12.5px; padding:10px 12px} }
+
 .extras{display:grid; margin-top:18px; background:none; border:0}
 .extras li{
   display:flex; gap:16px; flex-wrap:wrap; align-items:center;
