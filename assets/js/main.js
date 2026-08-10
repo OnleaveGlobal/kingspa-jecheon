@@ -151,6 +151,27 @@
     }
   }
 
+  /* ---------- 위생 관리 (세스코) ---------- */
+  function fillHygiene() {
+    var h = D.hygiene;
+    var box = $('#hygiene');
+    if (!box) return;
+    if (!h || !h.show) { box.hidden = true; return; }
+    box.hidden = false;
+
+    box.innerHTML =
+      '<img class="hyg__badge" src="' + h.badge + '" alt="' + esc(h.badgeAlt || '') + '" loading="lazy">' +
+      '<div class="hyg__bd">' +
+        '<p class="hyg__t">' + h.title + '</p>' +
+        '<p class="hyg__d">' + h.desc + '</p>' +
+        ((h.items || []).length
+          ? '<ul class="hyg__list">' +
+            h.items.map(function (t) { return '<li>' + t + '</li>'; }).join('') +
+            '</ul>'
+          : '') +
+      '</div>';
+  }
+
   /* ---------- 허브 노천탕 ---------- */
   function fillHerb() {
     var h = D.herb; if (!h) return;
@@ -798,6 +819,7 @@
     fillPricing();
     fillWaterslide();
     fillHerb();
+    fillHygiene();
     fillSlogans();
     fillNearby();
     fillTour();

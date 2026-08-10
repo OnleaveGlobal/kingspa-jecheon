@@ -586,6 +586,39 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .facil__d{font-size:14px; color:var(--ink-2); line-height:1.4; margin-top:8px; word-break:keep-all}
 .facil__d b{color:var(--brand-dp); font-weight:700}
 
+/* ---------- 위생 관리 (세스코) ----------
+   파란 인증 마크가 주황 브랜드색과 부딪히므로, 흰 바탕에 얹어
+   "붙여 놓은 인증 스티커"처럼 보이게 합니다 */
+.hyg[hidden]{display:none}
+.hyg{
+  display:flex; align-items:center; gap:clamp(16px,2.5vw,28px);
+  margin-top:clamp(38px,4.5vw,56px); padding:clamp(18px,2.4vw,26px);
+  background:#fff; border:1px solid var(--line);
+}
+.hyg__badge{flex:0 0 auto; width:auto; height:clamp(76px,8vw,104px)}
+.hyg__bd{min-width:0}
+.hyg__t{
+  font-family:var(--f-head); font-size:clamp(17px,2vw,21px); font-weight:800;
+  letter-spacing:-.02em; color:var(--ink);
+}
+.hyg__d{
+  margin-top:7px; font-size:14.5px; line-height:1.5;
+  color:var(--ink-2); word-break:keep-all;
+}
+.hyg__list{display:flex; flex-wrap:wrap; gap:6px 8px; margin-top:12px}
+.hyg__list li{
+  font-size:12.5px; font-weight:700; letter-spacing:-.02em;
+  color:var(--brand-dp); background:var(--brand-lt);
+  border:1px solid var(--brand-bd); padding:4px 10px;
+}
+@media (max-width:640px){
+  .hyg{gap:14px; padding:16px; margin-top:30px}
+  .hyg__badge{height:66px}
+  .hyg__d{font-size:13px; margin-top:5px}
+  .hyg__list{gap:5px 6px; margin-top:10px}
+  .hyg__list li{font-size:11.5px; padding:3px 8px}
+}
+
 /* ---------- 옆으로 미는 목록의 점 표시 ----------
    좁은 화면에서만 나옵니다. 넓은 화면에서는 목록이 전부 펼쳐지므로 필요 없습니다 */
 .hsdots{display:none}

@@ -119,9 +119,14 @@ function serve() {
 /* ---------- 페이지 껍데기 ---------- */
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
+/* 상단 메뉴 — index.html 의 메뉴와 항목이 같아야 합니다.
+   「360도 둘러보기」는 그 자체로 페이지는 아니고 시설안내 안의 한 자리라
+   PAGES 에 없습니다. 여기서 따로 앞에 붙여 홈과 똑같이 맞춥니다.
+   (index.html 의 메뉴를 고치면 이 목록도 같이 고쳐 주세요) */
 function navHtml(current) {
-  const items = PAGES.map((p) =>
-    `      <a href="/${p.slug}/"${p.slug === current ? ' class="is-active" aria-current="page"' : ''}>${p.nav}</a>`);
+  const items = [`      <a href="/facilities/#tour">360도 둘러보기</a>`].concat(
+    PAGES.map((p) =>
+      `      <a href="/${p.slug}/"${p.slug === current ? ' class="is-active" aria-current="page"' : ''}>${p.nav}</a>`));
   return items.join('\n');
 }
 
