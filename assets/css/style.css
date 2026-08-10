@@ -911,6 +911,17 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
    제천 가볼 만한 곳
    ============================================================ */
 .nearby[hidden]{display:none}
+/* 재입장 조건처럼 요금이 다시 발생하는 안내 — 지나치면 안 되는 내용이라
+   보통 주석보다 눈에 걸리게 합니다 */
+.notice{
+  margin:0 0 clamp(24px,3vw,34px);
+  padding:13px 16px;
+  background:var(--brand-lt); border-left:3px solid var(--brand-dk);
+  font-size:14.5px; font-weight:700; line-height:1.5;
+  color:var(--brand-dp); word-break:keep-all;
+}
+.notice[hidden]{display:none}
+@media (max-width:640px){ .notice{font-size:13px; padding:11px 13px} }
 .nb + .nb{margin-top:40px}
 /* 상자 대신 글씨로 — 다른 섹션과 같은 결 */
 .nb__label{

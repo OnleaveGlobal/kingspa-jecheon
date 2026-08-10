@@ -289,6 +289,11 @@
 
     var t = $('#nearbyTitle'); if (t) t.textContent = n.title || '';
     var dz = $('#nearbyDesc'); if (dz) dz.textContent = n.desc || '';
+    var nt = $('#nearbyNotice');
+    if (nt) {
+      if (n.notice) { nt.textContent = n.notice; nt.hidden = false; }
+      else { nt.hidden = true; }
+    }
 
     var base = n.imgBase || 'assets/img/nearby/';
     var box = $('#nearbyBody');
