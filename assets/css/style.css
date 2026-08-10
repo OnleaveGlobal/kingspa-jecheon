@@ -592,8 +592,10 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .hyg[hidden]{display:none}
 .hyg{
   display:flex; align-items:center; gap:clamp(22px,3.4vw,44px);
-  margin-top:clamp(40px,5vw,60px); padding-top:clamp(30px,3.6vw,44px);
-  border-top:1px solid var(--line);
+  /* 시설 이야기를 시작하기 전에 놓이므로, 위 제목과는 붙이고 아래 사진 띠와는 띄웁니다 */
+  margin:clamp(4px,1vw,10px) 0 clamp(30px,3.6vw,44px);
+  padding:clamp(20px,2.4vw,28px) clamp(22px,2.6vw,30px);
+  background:#fff; border:1px solid var(--line);
 }
 .hyg__badge{
   flex:0 0 auto; width:auto;
@@ -610,7 +612,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   color:var(--ink-2); word-break:keep-all;
 }
 @media (max-width:640px){
-  .hyg{gap:16px; margin-top:32px; padding-top:26px}
+  .hyg{gap:14px; margin:2px 0 24px; padding:16px}
   .hyg__badge{height:96px}
   .hyg__t{font-size:18px}
   .hyg__d{font-size:13.5px; margin-top:8px; line-height:1.55}
