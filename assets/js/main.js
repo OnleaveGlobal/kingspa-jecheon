@@ -159,11 +159,16 @@
     if (!g || !g.show) { sec.hidden = true; return; }
     sec.hidden = false;
 
-    /* 대표님 사진 — 아직 없으면 사진만 빼고 서명은 그대로 둡니다 */
+    /* 인사말 아래 사진 — 없으면 통째로 감춥니다 */
+    var box = $('#greetPhotoBox');
     var img = $('#greetPhoto');
-    if (img) {
-      if (g.photo) { img.src = g.photo; img.alt = g.photoAlt || ''; img.hidden = false; }
-      else { img.removeAttribute('src'); img.hidden = true; }
+    if (box && img) {
+      if (g.photo) {
+        img.src = g.photo; img.alt = g.photoAlt || '';
+        var cap = $('#greetPhotoCap');
+        if (cap) cap.textContent = g.photoCaption || '';
+        box.hidden = false;
+      } else { img.removeAttribute('src'); box.hidden = true; }
     }
     var lb = $('#greetLabel');
     if (lb) {
@@ -191,6 +196,12 @@
       }
     }
     var sg = $('#greetSign'); if (sg) sg.textContent = g.sign || '';
+    /* 손으로 쓰신 서명 — 이름은 위 글자가 이미 알려주므로 alt 는 비웁니다 */
+    var si = $('#greetSignImg');
+    if (si) {
+      if (g.signImage) { si.src = g.signImage; si.alt = ''; si.hidden = false; }
+      else { si.removeAttribute('src'); si.hidden = true; }
+    }
   }
 
   /* ---------- 위생 관리 (세스코) ---------- */

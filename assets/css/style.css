@@ -370,11 +370,20 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   margin-top:clamp(26px,3vw,36px); padding-top:20px;
   border-top:1px solid var(--line);
 }
-.greet__face{
-  flex:0 0 auto; width:66px; height:auto; aspect-ratio:3/4;
-  object-fit:cover; display:block; background:var(--bg-2);
+/* 인사말 아래 사진 — 임직원 단체 사진 */
+.greet__photo{margin:clamp(28px,3.4vw,42px) 0 0}
+.greet__photo[hidden]{display:none}
+.greet__photo img{width:100%; height:auto; display:block; background:var(--bg-2)}
+.greet__photo figcaption{
+  margin-top:11px; font-size:13px; color:var(--gray); letter-spacing:-.02em;
 }
-.greet__face[hidden]{display:none}
+.greet__photo figcaption:empty{display:none}
+/* 손으로 쓰신 서명 — 인쇄된 이름 뒤에 얹습니다 */
+.greet__autograph{
+  flex:0 0 auto; width:auto; height:clamp(42px,4vw,56px);
+  margin-left:2px; opacity:.88;
+}
+.greet__autograph[hidden]{display:none}
 .greet__sign{
   /* 손글씨 본문과 구분되도록 고딕 볼드로 — 이름은 또렷하게 */
   font-family:var(--f); font-size:15.5px; font-weight:800;
@@ -387,8 +396,8 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   .greet__body p{font-size:19px; line-height:1.7}
   .greet__body p + p{margin-top:13px}
   .greet__by{gap:12px; margin-top:22px; padding-top:16px}
-  .greet__face{width:56px}
   .greet__sign{font-size:14px}
+  .greet__autograph{height:38px}
 }
 
 /* ============================================================
