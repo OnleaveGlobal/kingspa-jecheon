@@ -657,6 +657,26 @@ window.SITE_DATA = {
         ],
       },
       {
+        // 24시간 도는 라면 자판기 — 밤늦게 오신 분이 가장 많이 찾습니다
+        name: "한강라면",
+        desc: "24시간 언제든 뽑아 드실 수 있습니다. 전자레인지와 그릇이 옆에 있습니다.",
+        photos: [
+          { img: "ramen.jpg", name: "한강라면 IoT 라면자판기" },
+        ],
+        // ⚠️ 라면 가격을 알려주시면 넣겠습니다. 종류마다 다르면 "3,000원 ~" 처럼 적어도 됩니다.
+        items: [],
+      },
+      {
+        name: "스타벅스",
+        desc: "캡슐 커피 자판기입니다. 24시간 이용하실 수 있습니다.",
+        photos: [
+          { img: "coffee.jpg", name: "스타벅스 캡슐 커피 자판기" },
+        ],
+        items: [
+          { name: "스타벅스 커피", price: "3,500원", sub: "카라멜 마키아토 등 5종" },
+        ],
+      },
+      {
         // 상하목장(매일유업) 소프트 아이스크림 — 매점 안에 묻어두지 않고 대분류로 세웁니다
         name: "상하목장 아이스크림",
         photos: [
@@ -685,8 +705,6 @@ window.SITE_DATA = {
           { img: "patbingsu-2.jpg", name: "옛날 빙수" },
           { img: "patbingsu.jpg",   name: "옛날 빙수" },
           { img: "sikhye.jpg",      name: "식혜 · 냉커피" },
-          { img: "ramen.jpg",       name: "한강라면 자판기" },
-          { img: "coffee.jpg",      name: "스타벅스 커피 자판기" },
         ],
         items: [
           { name: "레인보우 슬러시",      price: "5,000원" },
@@ -697,9 +715,6 @@ window.SITE_DATA = {
           { name: "버터구이 오징어",      price: "5,000원" },
           { name: "맥반석 계란",          price: "3,000원", sub: "3개" },
           { name: "훈제란",              price: "3,500원", sub: "3개" },
-
-          { name: "한강라면",   price: "-", sub: "IoT 라면자판기 · 15종. 전자레인지가 옆에 있습니다" },
-          { name: "스타벅스 커피", price: "3,500원", sub: "캡슐 커피 자판기 · 카라멜 마키아토 등 5종" },
 
           { divider: "음료" },
           { name: "식혜",     price: "4,000원" },
