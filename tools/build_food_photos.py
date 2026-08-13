@@ -53,6 +53,14 @@ MAP = {
     # "drink-1.jpg":  ("공용메뉴", "MH_07560"),
 }
 
+# 배경 교체본이 없어 촬영 원본에서 바로 뽑은 사진.
+# 자판기가 프레임을 채우도록 좌우를 잘라 씁니다.
+#   이름 : (원본번호, 가로/세로, 가로폭, 좌측 시작 비율, 사용할 폭 비율)
+FROM_ORIGINAL = {
+    "ramen.jpg":  ("MH_07167", 4 / 3, 900, 0.02, 0.62),   # 한강라면 IoT 라면자판기
+    "coffee.jpg": ("MH_07163", 4 / 3, 900, 0.10, 0.55),   # 스타벅스 캡슐 커피 자판기
+}
+
 
 def main() -> None:
     dry = "--dry-run" in sys.argv
@@ -82,6 +90,35 @@ def main() -> None:
         total += buf.tell()
         print(f"  {name:14} ← {folder}/{stem}.png  "
               f"{src.stat().st_size//1024}KB → {buf.tell()//1024}KB")
+        if not dry:
+            (FOOD / name).write_bytes(buf.getvalue())
+
+    # 촬영 원본에서 바로 뽑는 것들
+    from pathlib import Path as _P
+    orig = _P.home() / "Desktop" / "king-원본사진"
+    for name, (stem, ratio, width, x0f, wf) in FROM_ORIGINAL.items():
+        src = orig / f"{stem}.jpg"
+        if not src.exists():
+            missing.append(f"{stem}.jpg ({name}) — 촬영 원본")
+            continue
+        with Image.open(src) as im:
+            im.draft("RGB", (width * 4, width * 4))
+            im = im.convert("RGB")
+            w0, h0 = im.size
+            sub = im.crop((int(w0 * x0f), 0, int(w0 * x0f) + int(w0 * wf), h0))
+            sw, sh = sub.size
+            if sw / sh > ratio:
+                nw, nh = round(sh * ratio), sh
+            else:
+                nw, nh = sw, round(sw / ratio)
+            out = sub.crop(((sw - nw) // 2, (sh - nh) // 2,
+                            (sw - nw) // 2 + nw, (sh - nh) // 2 + nh))
+            out = out.resize((width, round(width / ratio)), Image.LANCZOS)
+        buf = io.BytesIO()
+        out.save(buf, "JPEG", quality=QUALITY, optimize=True,
+                 progressive=True, subsampling="4:2:0")
+        total += buf.tell()
+        print(f"  {name:14} ← {stem}.jpg (촬영 원본)  → {buf.tell()//1024}KB")
         if not dry:
             (FOOD / name).write_bytes(buf.getvalue())
 

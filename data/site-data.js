@@ -685,6 +685,8 @@ window.SITE_DATA = {
           { img: "patbingsu-2.jpg", name: "옛날 빙수" },
           { img: "patbingsu.jpg",   name: "옛날 빙수" },
           { img: "sikhye.jpg",      name: "식혜 · 냉커피" },
+          { img: "ramen.jpg",       name: "한강라면 자판기" },
+          { img: "coffee.jpg",      name: "스타벅스 커피 자판기" },
         ],
         items: [
           { name: "레인보우 슬러시",      price: "5,000원" },
@@ -695,6 +697,9 @@ window.SITE_DATA = {
           { name: "버터구이 오징어",      price: "5,000원" },
           { name: "맥반석 계란",          price: "3,000원", sub: "3개" },
           { name: "훈제란",              price: "3,500원", sub: "3개" },
+
+          { name: "한강라면",   price: "-", sub: "IoT 라면자판기 · 15종. 전자레인지가 옆에 있습니다" },
+          { name: "스타벅스 커피", price: "3,500원", sub: "캡슐 커피 자판기 · 카라멜 마키아토 등 5종" },
 
           { divider: "음료" },
           { name: "식혜",     price: "4,000원" },
