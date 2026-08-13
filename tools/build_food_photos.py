@@ -38,6 +38,8 @@ MAP = {
     "meal-3.jpg":   ("식사준비", "MH_07534"),
     "meal-4.jpg":   ("식사준비", "MH_07504"),
     "meal-5.jpg":   ("식사준비", "MH_07528"),
+    # ⚠️ 베이컨포테이토 피자입니다. 배경이 초록(식사준비 색)이라 여기에 넣었습니다.
+    "meal-6.jpg":   ("식사준비", "bacon-potato"),
     "hwarak-1.jpg": ("화락",     "MH_07459"),
     # 남자피자는 셋 다 같은 피자를 찍은 것이라 생맥주가 함께 나온 한 장만 씁니다
     "pizza-2.jpg":  ("남자피자", "MH_07559"),
@@ -72,7 +74,9 @@ def main() -> None:
     missing = []
 
     for name, (folder, stem) in MAP.items():
-        src = SRC / folder / f"{stem}.png"
+        # 받은 파일이 png 일 때도 jpg 일 때도 있어 둘 다 찾아봅니다
+        src = next((SRC / folder / f"{stem}{e}" for e in (".png", ".jpg", ".jpeg")
+                    if (SRC / folder / f"{stem}{e}").exists()), SRC / folder / f"{stem}.png")
         if not src.exists():
             missing.append(f"{folder}/{stem}.png ({name})")
             continue
@@ -92,7 +96,7 @@ def main() -> None:
         out.save(buf, "JPEG", quality=QUALITY, optimize=True,
                  progressive=True, subsampling="4:2:0")
         total += buf.tell()
-        print(f"  {name:14} ← {folder}/{stem}.png  "
+        print(f"  {name:14} ← {folder}/{src.name}  "
               f"{src.stat().st_size//1024}KB → {buf.tell()//1024}KB")
         if not dry:
             (FOOD / name).write_bytes(buf.getvalue())

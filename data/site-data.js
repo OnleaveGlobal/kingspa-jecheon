@@ -577,6 +577,7 @@ window.SITE_DATA = {
           { img: "meal-3.jpg", name: "찌개 한상" },
           { img: "meal-4.jpg", name: "반찬 한상" },
           { img: "meal-5.jpg", name: "제육 한상" },
+          { img: "meal-6.jpg", name: "베이컨포테이토 피자" },
         ],
         items: [
           { name: "미역국",              price: "10,900원" },
