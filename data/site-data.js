@@ -161,6 +161,7 @@ window.SITE_DATA = {
     show: true,
     photo: "assets/img/greeting.jpg",
     photoAlt: "제천킹스파찜질방 1층 안내데스크",
+    label: "인사말",                 // 제목 위에 붙는 작은 머리말
     title: "편안하게 쉬었다 가시라고",
     body: [
       "제천 시내 한복판에 2,400평을 열어 두었습니다. 목욕만 하고 가셔도 좋고, 하루를 통째로 보내셔도 좋습니다.",

@@ -332,6 +332,12 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .greet__photo{overflow:hidden; background:var(--bg-2)}
 .greet__photo img{width:100%; aspect-ratio:4/5; object-fit:cover; display:block}
 .greet__bd{min-width:0}
+/* 섹션 이름 — 관광지 섹션의 「걸어서 · 차로」 라벨과 같은 방식 */
+.greet__label{
+  display:block; margin-bottom:12px;
+  font-size:12px; font-weight:800; letter-spacing:.18em; color:var(--brand-dp);
+}
+.greet__label[hidden]{display:none}
 .greet__t{
   font-family:var(--f-head);
   font-size:clamp(24px,3.2vw,38px); font-weight:800;
@@ -356,6 +362,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   .greet__photo img{aspect-ratio:16/10}
 }
 @media (max-width:640px){
+  .greet__label{font-size:11px; margin-bottom:9px}
   .greet__t{font-size:22px}
   .greet__body{margin-top:16px}
   .greet__body p{font-size:13.5px; line-height:1.8}

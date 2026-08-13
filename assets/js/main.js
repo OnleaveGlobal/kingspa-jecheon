@@ -164,6 +164,11 @@
       if (g.photo) { img.src = g.photo; img.alt = g.photoAlt || ''; }
       else { var box = img.parentNode; if (box) box.hidden = true; }
     }
+    var lb = $('#greetLabel');
+    if (lb) {
+      if (g.label) { lb.textContent = g.label; lb.hidden = false; }
+      else { lb.hidden = true; }
+    }
     var t = $('#greetTitle'); if (t) t.textContent = g.title || '';
     var b = $('#greetBody');
     if (b) b.innerHTML = (g.body || []).map(function (p) { return '<p>' + p + '</p>'; }).join('');
