@@ -29,6 +29,8 @@
        'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   /* 제목은 명조로 — 목욕탕이라는 업종에 맞고, 기본값(Pretendard 볼드)에서 벗어난다 */
   --f-head: 'Nanum Myeongjo', 'Apple SD Gothic Neo', serif;
+  /* 인사말 본문 — 손으로 쓴 편지 느낌 (나눔손글씨 아빠의 연애편지) */
+  --f-hand: 'NanumABbaEuiYeonAePyeonJi', 'Nanum Myeongjo', serif;
 
   --hd: 68px;
 }
@@ -340,10 +342,13 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 }
 .greet__body{margin-top:clamp(20px,2.6vw,30px)}
 .greet__body p{
-  font-size:clamp(14.5px,1.15vw,16px); line-height:1.9; color:var(--ink-2);
+  font-family:var(--f-hand);
+  /* 손글씨는 같은 크기라도 본문 서체보다 작고 얇게 보입니다 — 한 단 키웁니다 */
+  font-size:clamp(18px,1.6vw,22px); line-height:1.85;
+  letter-spacing:.01em; color:var(--ink-2);
   word-break:keep-all;
 }
-.greet__body p + p{margin-top:15px}
+.greet__body p + p{margin-top:16px}
 
 /* 서명 줄 — 대표님 사진(증명사진)을 옆에 작게 둡니다 */
 .greet__by{
@@ -364,8 +369,8 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   .greet__label{font-size:11px; margin-bottom:9px}
   .greet__t{font-size:22px}
   .greet__body{margin-top:16px}
-  .greet__body p{font-size:13.5px; line-height:1.8}
-  .greet__body p + p{margin-top:12px}
+  .greet__body p{font-size:17px; line-height:1.75}
+  .greet__body p + p{margin-top:13px}
   .greet__by{gap:12px; margin-top:22px; padding-top:16px}
   .greet__face{width:56px}
   .greet__sign{font-size:14px}
