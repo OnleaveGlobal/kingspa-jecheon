@@ -159,8 +159,11 @@ window.SITE_DATA = {
   //    문단은 배열 한 칸이 한 문단입니다. 줄을 늘리거나 지우셔도 됩니다.
   greeting: {
     show: true,
-    photo: "assets/img/greeting.jpg",
-    photoAlt: "제천킹스파찜질방 1층 안내데스크",
+    // 대표님 사진 — 서명 옆에 작게 들어갑니다.
+    // ⚠️ 아직 없어서 비워 두었습니다. assets/img/ceo.jpg 로 넣으면 자동으로 나옵니다.
+    //    증명사진 비율(3:4) 권장, 가로 400px 정도면 충분합니다.
+    photo: "",
+    photoAlt: "제천킹스파찜질방 대표 김동술",
     label: "인사말",                 // 제목 위에 붙는 작은 머리말
     title: "편안하게 쉬었다 가시라고",
     body: [

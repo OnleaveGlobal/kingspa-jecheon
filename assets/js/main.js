@@ -159,10 +159,11 @@
     if (!g || !g.show) { sec.hidden = true; return; }
     sec.hidden = false;
 
+    /* 대표님 사진 — 아직 없으면 사진만 빼고 서명은 그대로 둡니다 */
     var img = $('#greetPhoto');
     if (img) {
-      if (g.photo) { img.src = g.photo; img.alt = g.photoAlt || ''; }
-      else { var box = img.parentNode; if (box) box.hidden = true; }
+      if (g.photo) { img.src = g.photo; img.alt = g.photoAlt || ''; img.hidden = false; }
+      else { img.removeAttribute('src'); img.hidden = true; }
     }
     var lb = $('#greetLabel');
     if (lb) {
