@@ -376,8 +376,9 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 }
 .greet__face[hidden]{display:none}
 .greet__sign{
-  font-family:var(--f-head); font-size:15.5px; font-weight:700;
-  letter-spacing:-.02em; color:var(--ink);
+  /* 손글씨 본문과 구분되도록 고딕 볼드로 — 이름은 또렷하게 */
+  font-family:var(--f); font-size:15.5px; font-weight:800;
+  letter-spacing:-.03em; color:var(--ink);
 }
 @media (max-width:640px){
   .greet__label{font-size:11px; margin-bottom:9px}
