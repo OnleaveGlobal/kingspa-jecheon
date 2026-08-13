@@ -151,6 +151,25 @@
     }
   }
 
+  /* ---------- 인사말 ---------- */
+  function fillGreeting() {
+    var g = D.greeting;
+    var sec = $('#greeting');
+    if (!sec) return;
+    if (!g || !g.show) { sec.hidden = true; return; }
+    sec.hidden = false;
+
+    var img = $('#greetPhoto');
+    if (img) {
+      if (g.photo) { img.src = g.photo; img.alt = g.photoAlt || ''; }
+      else { var box = img.parentNode; if (box) box.hidden = true; }
+    }
+    var t = $('#greetTitle'); if (t) t.textContent = g.title || '';
+    var b = $('#greetBody');
+    if (b) b.innerHTML = (g.body || []).map(function (p) { return '<p>' + p + '</p>'; }).join('');
+    var sg = $('#greetSign'); if (sg) sg.textContent = g.sign || '';
+  }
+
   /* ---------- 위생 관리 (세스코) ---------- */
   function fillHygiene() {
     var h = D.hygiene;
@@ -814,6 +833,7 @@
     fillPricing();
     fillWaterslide();
     fillHerb();
+    fillGreeting();
     fillHygiene();
     fillSlogans();
     fillNearby();
