@@ -569,6 +569,8 @@ window.SITE_DATA = {
           { img: "meal-1.jpg", name: "한상 차림" },
           { img: "meal-2.jpg", name: "비빔밥 정식" },
           { img: "meal-3.jpg", name: "찌개 한상" },
+          { img: "meal-4.jpg", name: "반찬 한상" },
+          { img: "meal-5.jpg", name: "제육 한상" },
         ],
         items: [
           { name: "미역국",              price: "10,900원" },
@@ -610,6 +612,7 @@ window.SITE_DATA = {
         photos: [
           { img: "pizza-1.jpg", name: "남자피자" },
           { img: "pizza-2.jpg", name: "피자 + 생맥주" },
+          { img: "pizza-3.jpg", name: "치즈피자" },
         ],
         items: [
           { name: "남자피자 (매콤피자)", price: "20,900원",
@@ -632,6 +635,7 @@ window.SITE_DATA = {
         photos: [
           { img: "kc-1.jpg", name: "양념치킨 + 후라이드치킨" },
           { img: "kc-2.jpg", name: "양념치킨" },
+          { img: "kc-3.jpg", name: "후라이드치킨" },
         ],
         items: [
           { name: "후라이드치킨",  price: "20,900원" },
@@ -646,6 +650,7 @@ window.SITE_DATA = {
         desc: "밤 10시 ~ 새벽 1시 30분에는 아래 메뉴만 주문하실 수 있습니다.",
         photos: [
           { img: "night-1.jpg", name: "치킨 + 생맥주" },
+          { img: "night-2.jpg", name: "양념·후라이드 + 생맥주" },
         ],
         items: [
           { name: "남자피자",      price: "20,900원 ~ 23,900원", sub: "5종류" },
