@@ -173,6 +173,23 @@
     var t = $('#greetTitle'); if (t) t.textContent = g.title || '';
     var b = $('#greetBody');
     if (b) b.innerHTML = (g.body || []).map(function (p) { return '<p>' + p + '</p>'; }).join('');
+
+    /* 손글씨 사진이 있으면 그것을 보여주고, 글은 화면에서만 감춥니다.
+       지우지 않는 이유 — 사진 속 글자는 검색엔진도 화면낭독기도 읽지 못합니다.
+       감춘 글이 그 역할을 대신합니다. */
+    var hand = $('#greetHand');
+    if (hand) {
+      if (g.handwriting) {
+        hand.src = g.handwriting;
+        hand.alt = (g.body || []).join(' ');
+        hand.hidden = false;
+        if (b) b.classList.add('is-sr');
+      } else {
+        hand.removeAttribute('src');
+        hand.hidden = true;
+        if (b) b.classList.remove('is-sr');
+      }
+    }
     var sg = $('#greetSign'); if (sg) sg.textContent = g.sign || '';
   }
 

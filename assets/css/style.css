@@ -340,6 +340,20 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   font-size:clamp(24px,3.2vw,38px); font-weight:800;
   letter-spacing:-.03em; line-height:1.35; color:var(--ink);
 }
+/* 손으로 쓴 인사말 스캔 */
+.greet__hand{
+  display:block; width:100%; height:auto;
+  margin-top:clamp(20px,2.6vw,30px);
+  mix-blend-mode:multiply;   /* 종이 흰 배경이 페이지 흰색과 자연스럽게 섞이도록 */
+}
+.greet__hand[hidden]{display:none}
+
+/* 화면에서만 감추고 검색엔진·화면낭독기에는 그대로 남깁니다 */
+.greet__body.is-sr{
+  position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+  overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;
+}
+
 .greet__body{margin-top:clamp(20px,2.6vw,30px)}
 .greet__body p{
   font-family:var(--f-hand);
