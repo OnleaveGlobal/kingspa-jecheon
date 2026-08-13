@@ -329,8 +329,10 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .greet{background:#fff}
 /* 글 왼쪽 · 사진 오른쪽. 글이 주인공이라 사진 칸은 좁게 둡니다 */
 .greet__in{
-  display:grid; grid-template-columns:minmax(0,1fr) clamp(220px,22vw,300px);
-  gap:clamp(28px,4vw,56px); align-items:start;
+  display:grid; grid-template-columns:minmax(0,1fr) clamp(280px,32vw,440px);
+  gap:clamp(28px,4vw,56px);
+  /* 글이 길고 사진은 가로라 위로 붙이면 오른쪽이 휑합니다 — 세로 가운데로 */
+  align-items:center;
 }
 .greet__bd{min-width:0}
 /* 섹션 이름 — 관광지 섹션의 「걸어서 · 차로」 라벨과 같은 방식 */
