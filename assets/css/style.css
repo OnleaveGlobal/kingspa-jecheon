@@ -344,7 +344,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .greet__body p{
   font-family:var(--f-hand);
   /* 손글씨는 같은 크기라도 본문 서체보다 작고 얇게 보입니다 — 한 단 키웁니다 */
-  font-size:clamp(18px,1.6vw,22px); line-height:1.85;
+  font-size:clamp(21px,1.9vw,26px); line-height:1.8;
   letter-spacing:.01em; color:var(--ink-2);
   word-break:keep-all;
 }
@@ -369,7 +369,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
   .greet__label{font-size:11px; margin-bottom:9px}
   .greet__t{font-size:22px}
   .greet__body{margin-top:16px}
-  .greet__body p{font-size:17px; line-height:1.75}
+  .greet__body p{font-size:19px; line-height:1.7}
   .greet__body p + p{margin-top:13px}
   .greet__by{gap:12px; margin-top:22px; padding-top:16px}
   .greet__face{width:56px}
