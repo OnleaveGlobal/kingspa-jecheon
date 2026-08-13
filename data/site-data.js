@@ -610,9 +610,7 @@ window.SITE_DATA = {
       {
         name: "남자피자",
         photos: [
-          { img: "pizza-1.jpg", name: "남자피자" },
-          { img: "pizza-2.jpg", name: "피자 + 생맥주" },
-          { img: "pizza-3.jpg", name: "치즈피자" },
+          { img: "pizza-2.jpg", name: "남자피자 + 생맥주" },
         ],
         items: [
           { name: "남자피자 (매콤피자)", price: "20,900원",
