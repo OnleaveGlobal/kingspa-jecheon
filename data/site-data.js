@@ -572,18 +572,20 @@ window.SITE_DATA = {
       {
         name: "식사준비",
         photos: [
+          // 한 접시가 또렷하게 보이는 사진을 앞에, 여러 그릇이 깔린
+          // 한상 차림은 뒤에 둡니다
+          { img: "nakji.jpg",      name: "낙지볶음" },
+          { img: "bibimbap.jpg",   name: "양푼 열무비빔밥" },
+          { img: "kimchi.jpg",     name: "김치찌개" },
+          { img: "donkatsu.jpg",   name: "돈까스" },
+          { img: "buchujeon.jpg",  name: "부추전" },
+          { img: "naengmyeon.jpg", name: "냉면" },
+          { img: "kimchi-2.jpg",   name: "김치찌개" },
+          { img: "meal-4.jpg", name: "반찬 한상" },
           { img: "meal-1.jpg", name: "한상 차림" },
           { img: "meal-2.jpg", name: "비빔밥 정식" },
           { img: "meal-3.jpg", name: "찌개 한상" },
-          { img: "meal-4.jpg", name: "반찬 한상" },
           { img: "meal-5.jpg", name: "제육 한상" },
-          { img: "kimchi.jpg",     name: "김치찌개" },
-          { img: "kimchi-2.jpg",   name: "김치찌개" },
-          { img: "nakji.jpg",      name: "낙지볶음" },
-          { img: "bibimbap.jpg",   name: "양푼 열무비빔밥" },
-          { img: "donkatsu.jpg",   name: "돈까스" },
-          { img: "naengmyeon.jpg", name: "냉면" },
-          { img: "buchujeon.jpg",  name: "부추전" },
         ],
         items: [
           { name: "미역국",              price: "10,900원" },
@@ -624,9 +626,9 @@ window.SITE_DATA = {
       {
         name: "남자피자",
         photos: [
-          { img: "pizza-2.jpg", name: "남자피자 + 생맥주" },
           { img: "pizza-4.jpg", name: "베이컨포테이토" },
           { img: "pizza-5.jpg", name: "베이컨포테이토" },
+          { img: "pizza-2.jpg", name: "남자피자 + 생맥주" },
         ],
         items: [
           { name: "남자피자 (매콤피자)", price: "20,900원",
