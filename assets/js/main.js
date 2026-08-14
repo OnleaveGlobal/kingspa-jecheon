@@ -127,6 +127,12 @@
       }).join('');
     }
 
+    var on = $('#wsOpenNote');
+    if (on) {
+      if (w.openNote) { on.textContent = w.openNote; on.hidden = false; }
+      else { on.hidden = true; }
+    }
+
     // 기본 안내
     var info = $('#wsInfo');
     if (info) {

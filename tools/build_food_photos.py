@@ -40,8 +40,9 @@ MAP = {
     "meal-4.jpg":   ("식사준비", "MH_07504"),
     "meal-5.jpg":   ("식사준비", "MH_07528"),
     # 2차 촬영 — 메뉴판 품목을 하나씩 찍은 사진들
-    "kimchi.jpg":   ("식사준비", "kimchi-jjigae"),
-    "kimchi-2.jpg": ("식사준비", "kimchi-jjigae-2"),
+    # 파일명이 「김치찌개」로 왔지만 실제로는 국물떡볶이입니다 (사업주 확인)
+    "tteokbokki.jpg":   ("식사준비", "tteokbokki"),
+    "tteokbokki-2.jpg": ("식사준비", "tteokbokki-2"),
     "nakji.jpg":    ("식사준비", "nakji", 90),   # 시계 방향 90도
     "bibimbap.jpg": ("식사준비", "bibimbap"),
     "donkatsu.jpg": ("식사준비", "donkatsu"),

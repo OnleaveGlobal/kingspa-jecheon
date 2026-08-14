@@ -882,6 +882,15 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .specs li{flex:0 1 210px; background:none; padding:8px 10px; text-align:center}
 .specs b{display:block; font-size:16px; font-weight:800; color:var(--ink); letter-spacing:-.035em}
 .specs span{display:block; font-size:19px; font-weight:800; color:var(--brand-dp); margin-top:5px; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+/* 요일별 여는 시간 — 시간표 바로 아래, 눈에 걸리게 */
+.wsopen{
+  margin-top:14px; text-align:center;
+  font-size:14.5px; font-weight:700; letter-spacing:-.02em;
+  color:var(--brand-dp); word-break:keep-all;
+}
+.wsopen[hidden]{display:none}
+@media (max-width:640px){ .wsopen{font-size:13px; margin-top:11px} }
+
 .wsinfo{margin-top:22px; display:grid; background:none; border:0}
 .wsinfo div{
   display:flex; gap:12px; padding:11px 0; background:none; font-size:14.5px;

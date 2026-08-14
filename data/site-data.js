@@ -84,9 +84,11 @@ window.SITE_DATA = {
 
     // 시설별 운영 시간
     attractions: [
-      { name: "에어바운스", time: "10:00 ~ 17:30" },
-      { name: "트램펄린",   time: "10:00 ~ 21:00" },
+      { name: "에어바운스", time: "11:00 ~ 18:00" },
+      { name: "트램펄린",   time: "11:00 ~ 18:00" },
     ],
+    // 요일에 따라 여는 시간이 다릅니다 — 헛걸음하지 않도록 시간표 바로 아래에 붙입니다
+    openNote: "월 · 화 · 수 · 목요일은 12:30에 문을 엽니다.",
 
     // 시설 사진 — 사진을 바꾸시려면 assets/img 의 같은 이름 파일만 갈아 끼우면 됩니다
     photos: [
@@ -576,14 +578,15 @@ window.SITE_DATA = {
           // 한상 차림은 뒤에 둡니다
           { img: "nakji.jpg",      name: "낙지볶음" },
           { img: "bibimbap.jpg",   name: "양푼 열무비빔밥" },
-          { img: "kimchi.jpg",     name: "김치찌개" },
           { img: "donkatsu.jpg",   name: "돈까스" },
           { img: "buchujeon.jpg",  name: "부추전" },
           { img: "naengmyeon.jpg", name: "냉면" },
-          { img: "kimchi-2.jpg",   name: "김치찌개" },
           { img: "meal-4.jpg", name: "반찬 한상" },
           { img: "meal-3.jpg", name: "찌개 한상" },
           { img: "meal-5.jpg", name: "제육 한상" },
+          // 국물떡볶이 두 컷은 맨 뒤에 나란히 — 사진이 2열이라 한 줄에 양 옆으로 놓입니다
+          { img: "tteokbokki.jpg",   name: "국물떡볶이" },
+          { img: "tteokbokki-2.jpg", name: "국물떡볶이" },
         ],
         items: [
           { name: "미역국",              price: "10,900원" },
