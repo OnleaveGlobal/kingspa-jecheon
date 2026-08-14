@@ -582,8 +582,6 @@ window.SITE_DATA = {
           { img: "naengmyeon.jpg", name: "냉면" },
           { img: "kimchi-2.jpg",   name: "김치찌개" },
           { img: "meal-4.jpg", name: "반찬 한상" },
-          { img: "meal-1.jpg", name: "한상 차림" },
-          { img: "meal-2.jpg", name: "비빔밥 정식" },
           { img: "meal-3.jpg", name: "찌개 한상" },
           { img: "meal-5.jpg", name: "제육 한상" },
         ],
