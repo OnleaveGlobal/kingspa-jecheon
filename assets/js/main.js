@@ -79,7 +79,26 @@
     }
 
     var pf = $('#passFooter');
-    if (pf) pf.textContent = p.passFooter || '';
+    if (pf) { pf.textContent = p.passFooter || ''; pf.hidden = !p.passFooter; }
+
+    // 헬스 + 사우나 회원권 — 기간권이라 횟수권과 나눠서 보여줍니다
+    var mb = p.membership, mw = $('#memb');
+    if (mw && mb && mb.show !== false) {
+      mw.hidden = false;
+      $('#membTitle').textContent = mb.title || '';
+      var md = $('#membDesc');
+      md.textContent = mb.desc || ''; md.hidden = !mb.desc;
+      $('#membItems').innerHTML = (mb.items || []).map(function (v) {
+        return '<div class="pass' + (v.highlight ? ' is-hot' : '') + '">' +
+          '<h4>' + v.name + '</h4>' +
+          '<p class="pass__price">' + v.price + '</p>' +
+          (v.note ? '<p class="pass__note">' + v.note + '</p>' : '') +
+          '</div>';
+      }).join('');
+      $('#membRules').innerHTML = (mb.rules || []).map(function (t) {
+        return '<li>' + t + '</li>';
+      }).join('');
+    }
   }
 
   /* ---------- 워터슬라이드 ---------- */

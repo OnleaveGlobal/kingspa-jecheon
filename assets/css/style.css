@@ -978,7 +978,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .extras__label{font-weight:800; color:var(--ink); min-width:80px}
 .extras__value{color:var(--ink-2)}
 
-.passes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; background:none; border:0}
+.passes{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0; background:none; border:0}
 .sub + .passes{margin-top:6px}
 .pass{position:relative; text-align:center; padding:22px 14px; background:none}
 .pass + .pass{border-left:1px solid var(--line)}
@@ -986,6 +986,15 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .pass__count{font-size:12.5px; color:var(--gray); margin-top:2px}
 .pass__price{font-size:27px; font-weight:800; color:var(--brand-dp); margin-top:12px; letter-spacing:-.045em; line-height:1.15}
 .pass__note{font-size:12.5px; color:var(--gray); margin-top:5px}
+
+/* 헬스 + 사우나 회원권 — 기간권이라 횟수권과 성격이 달라 따로 묶었습니다 */
+.memb__desc{margin-top:13px; text-align:left}
+.memb .pass__price{margin-top:9px}
+.memb__rules{margin:14px auto 0; display:grid; gap:6px; max-width:520px}
+.memb__rules li{position:relative; padding-left:13px; font-size:12.5px;
+  color:var(--gray); line-height:1.5}
+.memb__rules li::before{content:""; position:absolute; left:2px; top:.6em;
+  width:3px; height:3px; border-radius:50%; background:currentColor; opacity:.55}
 
 /* ============================================================
    이용안내

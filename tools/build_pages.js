@@ -55,7 +55,7 @@ const PAGES = [
     slug: 'pricing', from: '#pricing',
     nav: '이용요금',
     title: '이용요금 — 목욕 8,000원 · 찜질방 12,000원',
-    desc: '목욕 8,000원(소인 7,000원), 찜질방 12,000원(소인 11,000원). 헬스장 무료, 24시간 연중무휴, 주차 무료. 횟수권 · 정기권 안내.',
+    desc: '목욕 8,000원(소인 7,000원), 찜질방 12,000원(소인 11,000원). 헬스장 무료, 24시간 연중무휴, 주차 무료. 횟수권과 헬스 + 사우나 회원권 안내.',
   },
   {
     slug: 'guide', from: '#guide',
@@ -347,6 +347,23 @@ function jsonldFor(page, data, today) {
         ],
       });
     });
+
+    // 헬스 + 사우나 회원권 — 기간별 금액을 하나의 Product 에 Offer 로 답니다
+    const mb = data.pricing.membership;
+    if (mb && mb.show !== false) {
+      graph.push({
+        '@type': 'Product',
+        name: `${data.info.name} ${mb.title}`,
+        description: mb.desc || '',
+        brand: { '@id': BIZ_ID },
+        offers: mb.items.map((v) => ({
+          '@type': 'Offer', name: v.name, url: `${SITE}/pricing/`,
+          price: String(v.price).replace(/[^0-9]/g, ''), priceCurrency: 'KRW',
+          availability: 'https://schema.org/InStock',
+          seller: { '@id': BIZ_ID },
+        })),
+      });
+    }
   }
 
   if (page.slug === 'menu') {
