@@ -86,9 +86,11 @@ ZOOM = {
 # 무엇을 파는 기계인지 한눈에 알 수 있는 부분 — 간판과 가격 화면 — 이
 # 들어오도록 위쪽을 기준으로 잘라냅니다.
 #   이름 : (원본번호, 가로/세로, 가로폭, 왼쪽 시작 비율, 쓸 가로 비율, 위 시작 비율)
+#   위 시작 비율에 None 을 주면 위아래 가운데를 씁니다.
 FROM_ORIGINAL = {
-    "ramen.jpg":  ("MH_07754", 4 / 3, 900, 0.00, 1.00, 0.22),  # 한강라면 IoT 라면자판기
-    "coffee.jpg": ("MH_07751", 4 / 3, 900, 0.00, 1.00, 0.02),  # 스타벅스 캡슐 커피 자판기
+    "ramen.jpg":    ("MH_07754", 4 / 3, 900, 0.00, 1.00, 0.22),  # 한강라면 IoT 라면자판기
+    "coffee.jpg":   ("MH_07751", 4 / 3, 900, 0.00, 1.00, 0.02),  # 스타벅스 자판기 — 가격 화면
+    "coffee-2.jpg": ("MH_07163", 4 / 3, 900, 0.10, 0.55, None),  # 자판기가 늘어선 자리 전체
 }
 
 
@@ -215,7 +217,7 @@ def main() -> None:
             ch = min(h0, round(cw / ratio))
             cw = round(ch * ratio)
             x0 = max(0, min(round(w0 * x0f), w0 - cw))
-            y0 = max(0, min(round(h0 * y0f), h0 - ch))
+            y0 = (h0 - ch) // 2 if y0f is None else max(0, min(round(h0 * y0f), h0 - ch))
             out = im.crop((x0, y0, x0 + cw, y0 + ch))
             out = out.resize((width, round(width / ratio)), Image.LANCZOS)
         buf = io.BytesIO()
