@@ -596,9 +596,9 @@ window.SITE_DATA = {
         photos: [
           // 한 접시가 또렷하게 보이는 사진을 앞에, 여러 그릇이 깔린
           // 한상 차림은 뒤에 둡니다
-          { img: "nakji.jpg",      name: "낙지볶음" },
           { img: "bibimbap.jpg",   name: "양푼 열무비빔밥" },
           { img: "donkatsu.jpg",   name: "돈까스" },
+          { img: "nakji.jpg",      name: "낙지볶음" },
           { img: "buchujeon.jpg",  name: "부추전" },
           { img: "naengmyeon.jpg", name: "냉면" },
           { img: "meal-4.jpg", name: "반찬 한상" },

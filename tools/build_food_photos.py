@@ -110,28 +110,49 @@ def fit_on_background(im: Image.Image, ratio: float, width: int,
     bg = tuple(sum(c[i] for c in cor) // 4 for i in range(3))
 
     # ② 배경과 다른 화소 = 음식. 그 범위를 찾습니다
-    xs, ys = [], []
+    #
+    # 줄 단위로 셉니다. 그릇 밑에서 옆으로 길게 늘어진 그림자는 배경과
+    # 색이 달라 음식으로 잡히는데, 두께가 얇아 그 세로줄에는 몇 점밖에
+    # 없습니다. 반대로 음식이 걸친 줄에는 화소가 두툼하게 쌓입니다.
+    # 그래서 「몇 점 안 되는 줄」은 음식이 아니라고 보고 넘깁니다.
+    # (이 걸러내기가 없으면 그림자까지 한 덩어리로 보고 가운데를 잡아
+    #  음식이 반대쪽으로 밀려납니다 — 상하목장 아이스크림이 그랬습니다)
+    col = [0] * sw
+    row = [0] * sh
     for y in range(sh):
         for x in range(sw):
             r, g, b = px[x, y]
             if abs(r - bg[0]) + abs(g - bg[1]) + abs(b - bg[2]) > 78:
-                xs.append(x); ys.append(y)
-    if xs:
-        xs.sort(); ys.sort()
-        cut = max(1, len(xs) // 50)          # 튀는 점 몇 개는 무시합니다
-        x0, x1 = xs[cut] / sw * W, xs[-cut] / sw * W
-        y0, y1 = ys[cut] / sh * H, ys[-cut] / sh * H
+                col[x] += 1; row[y] += 1
+    xi = [x for x in range(sw) if col[x] >= max(2, sh * 0.03)]
+    yi = [y for y in range(sh) if row[y] >= max(2, sw * 0.03)]
+    if xi and yi:
+        x0, x1 = xi[0] / sw * W, xi[-1] / sw * W
+        y0, y1 = yi[0] / sh * H, yi[-1] / sh * H
     else:
         x0, y0, x1, y1 = 0, 0, W, H
 
     cw, ch = x1 - x0, y1 - y0
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
 
-    # ③ 음식이 여백을 두고 다 들어가는 판을 잡고 가운데에 붙입니다
+    # ③ 음식이 여백을 두고 다 들어가는 판을 잡습니다
     bw = max(cw * (1 + margin * 2), ch * (1 + margin * 2) * ratio)
     bh = bw / ratio
+
+    def place(board, size, center):
+        """원본을 판 위 어디에 놓을지 정합니다."""
+        # 판이 원본보다 넓다 = 여백을 덧대는 쪽입니다. 이때는 원본을 한가운데
+        # 둡니다. 사진가가 잡아둔 좌우 여백이 곧 구도이고, 굳이 음식 기준으로
+        # 다시 맞추면 그릇 밑에 깔린 그림자까지 음식으로 세어 반대쪽으로
+        # 밀려납니다 (상하목장 아이스크림이 그랬습니다).
+        if board >= size:
+            return (board - size) / 2
+        # 판이 좁다 = 잘라내는 쪽입니다. 음식이 잘리지 않게 음식 가운데에
+        # 맞추되, 판이 원본 밖으로 나가 빈 곳이 생기지 않도록 붙잡아 둡니다.
+        return min(0, max(board - size, board / 2 - center))
+
     out = Image.new("RGB", (round(bw), round(bh)), bg)
-    out.paste(im, (round(bw / 2 - cx), round(bh / 2 - cy)))
+    out.paste(im, (round(place(bw, W, cx)), round(place(bh, H, cy))))
     return out.resize((width, round(width / ratio)), Image.LANCZOS)
 
 
