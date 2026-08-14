@@ -70,6 +70,13 @@ MAP = {
     # "drink-1.jpg":  ("공용메뉴", "MH_07560"),
 }
 
+# 여백이 많아 음식이 작아 보이는 사진은 가운데를 잘라 키웁니다.
+#   값은 「원본의 몇 할을 쓸지」 — 0.8 이면 가운데 80%만 씁니다.
+ZOOM = {
+    "bibimbap.jpg": 0.78,   # 양푼이비빔밥 — 초록 배경이 넓어 상이 작아 보였습니다
+}
+
+
 # 배경 교체본이 없어 촬영 원본에서 바로 뽑은 사진.
 # 자판기가 프레임을 채우도록 좌우를 잘라 씁니다.
 #   이름 : (원본번호, 가로/세로, 가로폭, 좌측 시작 비율, 사용할 폭 비율)
@@ -148,6 +155,13 @@ def main() -> None:
             # 시계 방향으로 돌립니다 (Pillow 는 반시계 기준이라 부호를 뒤집습니다)
             src_im = im.rotate(-rotate, expand=True) if rotate else im
             out = fit_on_background(src_im, RATIO, WIDTH)
+        z = ZOOM.get(name)
+        if z:
+            w, h = out.size
+            cw, ch = round(w * z), round(h * z)
+            out = out.crop(((w - cw) // 2, (h - ch) // 2,
+                            (w - cw) // 2 + cw, (h - ch) // 2 + ch))
+            out = out.resize((WIDTH, round(WIDTH / RATIO)), Image.LANCZOS)
 
         buf = io.BytesIO()
         out.save(buf, "JPEG", quality=QUALITY, optimize=True,
