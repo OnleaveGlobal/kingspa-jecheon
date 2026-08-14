@@ -43,7 +43,7 @@ MAP = {
     # 파일명이 「김치찌개」로 왔지만 실제로는 국물떡볶이입니다 (사업주 확인)
     "tteokbokki.jpg":   ("식사준비", "tteokbokki"),
     # 비스듬히 찍은 두 번째 컷(tteokbokki-2)은 사업주 요청으로 뺐습니다
-    "nakji.jpg":    ("식사준비", "nakji", 90),   # 시계 방향 90도
+    "nakji.jpg":    ("식사준비", "nakji"),   # 3차 교체본 — 이미 바로 서 있어 회전 없음
     "bibimbap.jpg": ("식사준비", "bibimbap"),
     "donkatsu.jpg": ("식사준비", "donkatsu"),
     "naengmyeon.jpg": ("식사준비", "naengmyeon"),
@@ -90,6 +90,11 @@ def fit_on_background(im: Image.Image, ratio: float, width: int,
     """
     im = im.convert("RGB")
     W, H = im.size
+
+    # 이미 원하는 비율로 찍혀 온 사진은 손대지 않습니다. 사진가가 잡은
+    # 여백이 곧 구도라, 다시 재보고 가운데로 옮기면 오히려 답답해집니다.
+    if abs(W / H - ratio) < 0.02:
+        return im.resize((width, round(width / ratio)), Image.LANCZOS)
 
     # ① 네 귀퉁이에서 배경색을 읽습니다
     s = im.resize((240, max(1, round(240 * H / W))))
