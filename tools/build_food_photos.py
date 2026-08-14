@@ -82,11 +82,13 @@ ZOOM = {
 
 
 # 배경 교체본이 없어 촬영 원본에서 바로 뽑은 사진.
-# 자판기가 프레임을 채우도록 좌우를 잘라 씁니다.
-#   이름 : (원본번호, 가로/세로, 가로폭, 좌측 시작 비율, 사용할 폭 비율)
+# 세로로 찍힌 자판기라 4:3 안에 기계 전체를 담을 수 없습니다. 그래서
+# 무엇을 파는 기계인지 한눈에 알 수 있는 부분 — 간판과 가격 화면 — 이
+# 들어오도록 위쪽을 기준으로 잘라냅니다.
+#   이름 : (원본번호, 가로/세로, 가로폭, 왼쪽 시작 비율, 쓸 가로 비율, 위 시작 비율)
 FROM_ORIGINAL = {
-    "ramen.jpg":  ("MH_07167", 4 / 3, 900, 0.02, 0.62),   # 한강라면 IoT 라면자판기
-    "coffee.jpg": ("MH_07163", 4 / 3, 900, 0.10, 0.55),   # 스타벅스 캡슐 커피 자판기
+    "ramen.jpg":  ("MH_07754", 4 / 3, 900, 0.00, 1.00, 0.22),  # 한강라면 IoT 라면자판기
+    "coffee.jpg": ("MH_07751", 4 / 3, 900, 0.00, 1.00, 0.02),  # 스타벅스 캡슐 커피 자판기
 }
 
 
@@ -200,7 +202,7 @@ def main() -> None:
     # 촬영 원본에서 바로 뽑는 것들
     from pathlib import Path as _P
     orig = _P.home() / "Desktop" / "king-원본사진"
-    for name, (stem, ratio, width, x0f, wf) in FROM_ORIGINAL.items():
+    for name, (stem, ratio, width, x0f, wf, y0f) in FROM_ORIGINAL.items():
         src = orig / f"{stem}.jpg"
         if not src.exists():
             missing.append(f"{stem}.jpg ({name}) — 촬영 원본")
@@ -209,14 +211,12 @@ def main() -> None:
             im.draft("RGB", (width * 4, width * 4))
             im = im.convert("RGB")
             w0, h0 = im.size
-            sub = im.crop((int(w0 * x0f), 0, int(w0 * x0f) + int(w0 * wf), h0))
-            sw, sh = sub.size
-            if sw / sh > ratio:
-                nw, nh = round(sh * ratio), sh
-            else:
-                nw, nh = sw, round(sw / ratio)
-            out = sub.crop(((sw - nw) // 2, (sh - nh) // 2,
-                            (sw - nw) // 2 + nw, (sh - nh) // 2 + nh))
+            cw = min(w0, round(w0 * wf))
+            ch = min(h0, round(cw / ratio))
+            cw = round(ch * ratio)
+            x0 = max(0, min(round(w0 * x0f), w0 - cw))
+            y0 = max(0, min(round(h0 * y0f), h0 - ch))
+            out = im.crop((x0, y0, x0 + cw, y0 + ch))
             out = out.resize((width, round(width / ratio)), Image.LANCZOS)
         buf = io.BytesIO()
         out.save(buf, "JPEG", quality=QUALITY, optimize=True,
