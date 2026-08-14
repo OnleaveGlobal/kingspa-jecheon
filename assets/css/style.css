@@ -790,9 +790,10 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .mside{min-width:0}
 .mbody--wide{grid-template-columns:minmax(0,1fr)}
 
-/* 가격표 옆에 놓이는 사진은 세로로 쌓습니다 — 두 장을 옆으로 붙이면
-   사진 칸이 가격표보다 훨씬 짧아져 오른쪽에 큰 빈 자리가 남습니다 */
-.mgrid{display:grid; grid-template-columns:minmax(0,1fr); gap:14px}
+/* 가격표 옆 사진 — 칸 폭에 맞춰 저절로 1~2열이 됩니다.
+   사진이 한두 장일 때는 크게 한 줄로, 여러 장일 때는 두 줄로 깔려
+   가격표와 길이가 비슷하게 맞습니다 */
+.mgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px}
 .mbody--wide .mgrid{grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px}
 /* 사진이 둘뿐인 분류는 세 칸을 쓰면 오른쪽 한 칸이 비어 미완성으로 보입니다 */
 .mbody--wide .mgrid:has(> :nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}

@@ -38,11 +38,20 @@ MAP = {
     "meal-3.jpg":   ("식사준비", "MH_07534"),
     "meal-4.jpg":   ("식사준비", "MH_07504"),
     "meal-5.jpg":   ("식사준비", "MH_07528"),
-    # ⚠️ 베이컨포테이토 피자입니다. 배경이 초록(식사준비 색)이라 여기에 넣었습니다.
-    "meal-6.jpg":   ("식사준비", "bacon-potato"),
+    # 2차 촬영 — 메뉴판 품목을 하나씩 찍은 사진들
+    "kimchi.jpg":   ("식사준비", "kimchi-jjigae"),
+    "kimchi-2.jpg": ("식사준비", "kimchi-jjigae-2"),
+    "nakji.jpg":    ("식사준비", "nakji"),
+    "bibimbap.jpg": ("식사준비", "bibimbap"),
+    "donkatsu.jpg": ("식사준비", "donkatsu"),
+    "naengmyeon.jpg": ("식사준비", "naengmyeon"),
+    "buchujeon.jpg":  ("식사준비", "buchujeon"),
     "hwarak-1.jpg": ("화락",     "MH_07459"),
+    "hwarak-2.jpg": ("화락",     "ganjang-chibap"),
     # 남자피자는 셋 다 같은 피자를 찍은 것이라 생맥주가 함께 나온 한 장만 씁니다
     "pizza-2.jpg":  ("남자피자", "MH_07559"),
+    "pizza-4.jpg":  ("남자피자", "potato-pizza"),
+    "pizza-5.jpg":  ("남자피자", "potato-pizza-2"),
     "kc-1.jpg":     ("KC치킨",   "MH_07450"),
     "kc-2.jpg":     ("KC치킨",   "MH_07472"),
     "kc-3.jpg":     ("KC치킨",   "MH_07455"),

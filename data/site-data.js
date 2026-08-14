@@ -577,7 +577,13 @@ window.SITE_DATA = {
           { img: "meal-3.jpg", name: "찌개 한상" },
           { img: "meal-4.jpg", name: "반찬 한상" },
           { img: "meal-5.jpg", name: "제육 한상" },
-          { img: "meal-6.jpg", name: "베이컨포테이토 피자" },
+          { img: "kimchi.jpg",     name: "김치찌개" },
+          { img: "kimchi-2.jpg",   name: "김치찌개" },
+          { img: "nakji.jpg",      name: "낙지볶음" },
+          { img: "bibimbap.jpg",   name: "양푼 열무비빔밥" },
+          { img: "donkatsu.jpg",   name: "돈까스" },
+          { img: "naengmyeon.jpg", name: "냉면" },
+          { img: "buchujeon.jpg",  name: "부추전" },
         ],
         items: [
           { name: "미역국",              price: "10,900원" },
@@ -606,6 +612,7 @@ window.SITE_DATA = {
         name: "화락",
         photos: [
           { img: "hwarak-1.jpg", name: "직화 바베큐치킨" },
+          { img: "hwarak-2.jpg", name: "직화간장치밥" },
         ],
         items: [
           { name: "직화간장바베큐치킨",   price: "23,900원" },
@@ -618,6 +625,8 @@ window.SITE_DATA = {
         name: "남자피자",
         photos: [
           { img: "pizza-2.jpg", name: "남자피자 + 생맥주" },
+          { img: "pizza-4.jpg", name: "베이컨포테이토" },
+          { img: "pizza-5.jpg", name: "베이컨포테이토" },
         ],
         items: [
           { name: "남자피자 (매콤피자)", price: "20,900원",
