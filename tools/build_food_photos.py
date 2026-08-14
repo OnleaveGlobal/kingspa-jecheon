@@ -42,7 +42,7 @@ MAP = {
     # 2차 촬영 — 메뉴판 품목을 하나씩 찍은 사진들
     "kimchi.jpg":   ("식사준비", "kimchi-jjigae"),
     "kimchi-2.jpg": ("식사준비", "kimchi-jjigae-2"),
-    "nakji.jpg":    ("식사준비", "nakji"),
+    "nakji.jpg":    ("식사준비", "nakji", 90),   # 시계 방향 90도
     "bibimbap.jpg": ("식사준비", "bibimbap"),
     "donkatsu.jpg": ("식사준비", "donkatsu"),
     "naengmyeon.jpg": ("식사준비", "naengmyeon"),
@@ -127,7 +127,10 @@ def main() -> None:
     total = 0
     missing = []
 
-    for name, (folder, stem) in MAP.items():
+    for name, entry in MAP.items():
+        # (폴더, 파일명) 또는 (폴더, 파일명, 시계방향 회전각)
+        folder, stem = entry[0], entry[1]
+        rotate = entry[2] if len(entry) > 2 else 0
         # 받은 파일이 png 일 때도 jpg 일 때도 있어 둘 다 찾아봅니다
         src = next((SRC / folder / f"{stem}{e}" for e in (".png", ".jpg", ".jpeg")
                     if (SRC / folder / f"{stem}{e}").exists()), SRC / folder / f"{stem}.png")
@@ -136,7 +139,9 @@ def main() -> None:
             continue
 
         with Image.open(src) as im:
-            out = fit_on_background(im, RATIO, WIDTH)
+            # 시계 방향으로 돌립니다 (Pillow 는 반시계 기준이라 부호를 뒤집습니다)
+            src_im = im.rotate(-rotate, expand=True) if rotate else im
+            out = fit_on_background(src_im, RATIO, WIDTH)
 
         buf = io.BytesIO()
         out.save(buf, "JPEG", quality=QUALITY, optimize=True,
