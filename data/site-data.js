@@ -701,7 +701,8 @@ window.SITE_DATA = {
         name: "한강라면",
         desc: "24시간 언제든 뽑아 드실 수 있습니다. 전자레인지와 그릇이 옆에 있습니다.",
         photos: [
-          { img: "ramen.jpg", name: "한강라면 IoT 라면자판기" },
+          { img: "ramen-cup.jpg", name: "한강라면" },
+          { img: "ramen.jpg",     name: "한강라면 IoT 라면자판기" },
         ],
         // ⚠️ 라면 가격을 알려주시면 넣겠습니다. 종류마다 다르면 "3,000원 ~" 처럼 적어도 됩니다.
         items: [],
@@ -722,12 +723,13 @@ window.SITE_DATA = {
         photos: [
           { img: "sangha-1.jpg", name: "상하목장 소프트 아이스크림" },
           { img: "sangha-2.jpg", name: "상하목장 소프트 아이스크림" },
+          { img: "icebar.jpg",   name: "천연과일 아이스크림 6종" },
         ],
         items: [
           { name: "상하목장 소프트 아이스크림", price: "5,000원",
             sub: "유기농 우유로 만듭니다 · 우유 · 초코 · 반반" },
           { name: "천연과일 아이스크림",       price: "5,000원",
-            sub: "ICE FACTORY · 스트로베리 · 블루레몬에이드 · 수박 · 레인보우팝 · 애니멀초코" },
+            sub: "ICE FACTORY · 스트로베리샤벳 · 애니멀쇼콜라 · 쇼콜라 · 수박바 · 블루레모네이드 · 레인보우팝" },
           { name: "딸기팝핑 아이스크림",       price: "7,000원",
             sub: "딸기 · 초코링 · 톡톡 터지는 팝핑보바" },
           { name: "망고팝핑 아이스크림",       price: "7,000원",
@@ -741,6 +743,10 @@ window.SITE_DATA = {
       {
         name: "매점",
         photos: [
+          { img: "waffle.jpg", name: "벨지언와플 & 생크림" },
+          // ⚠️ 감자튀김이 아래 매점 가격표에는 없습니다. 파는 것이면 가격을
+          //    알려주세요. 매점 품목이 아니면 이 사진을 옮기겠습니다.
+          { img: "fries.jpg",  name: "감자튀김" },
           // 빙수·식혜는 주황 배경 원본을 그대로 씁니다 (사업주 요청)
           { img: "patbingsu-2.jpg", name: "옛날 빙수" },
           { img: "patbingsu.jpg",   name: "옛날 빙수" },
