@@ -704,8 +704,10 @@ window.SITE_DATA = {
           { img: "ramen-cup.jpg", name: "한강라면" },
           { img: "ramen.jpg",     name: "한강라면 IoT 라면자판기" },
         ],
-        // ⚠️ 라면 가격을 알려주시면 넣겠습니다. 종류마다 다르면 "3,000원 ~" 처럼 적어도 됩니다.
-        items: [],
+        items: [
+          { name: "한강라면", price: "4,000원",
+            sub: "진라면 순한맛 · 매운맛 · 신라면 · 너구리 · 안성탕면 · 짜파게티 · 진짬뽕 등 — 어느 것을 고르셔도 같은 값입니다" },
+        ],
       },
       {
         name: "스타벅스",
@@ -744,9 +746,7 @@ window.SITE_DATA = {
         name: "매점",
         photos: [
           { img: "waffle.jpg", name: "벨지언와플 & 생크림" },
-          // ⚠️ 감자튀김이 아래 매점 가격표에는 없습니다. 파는 것이면 가격을
-          //    알려주세요. 매점 품목이 아니면 이 사진을 옮기겠습니다.
-          { img: "fries.jpg",  name: "감자튀김" },
+          { img: "squid.jpg",  name: "버터구이 오징어" },
           // 빙수·식혜는 주황 배경 원본을 그대로 씁니다 (사업주 요청)
           { img: "patbingsu-2.jpg", name: "옛날 빙수" },
           { img: "patbingsu.jpg",   name: "옛날 빙수" },

@@ -62,7 +62,7 @@ MAP = {
     "icebar.jpg":   ("상하목장", "icebar"),      # ICE FACTORY 천연과일 아이스크림 6종
     "ramen-cup.jpg": ("한강라면", "ramen-cup"),
     "waffle.jpg":   ("매점",     "waffle"),
-    "fries.jpg":    ("매점",     "fries"),
+    "squid.jpg":    ("매점",     "squid"),
     "sangha-1.jpg": ("상하목장", "MH_07632"),
     "sangha-2.jpg": ("상하목장", "MH_07622"),
     # 빙수(MH_07634 · MH_07607)와 음료(MH_07560)는 배경 교체본 대신
