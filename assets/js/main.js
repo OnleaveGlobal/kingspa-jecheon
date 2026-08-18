@@ -101,9 +101,9 @@
     }
   }
 
-  /* ---------- 수면방 ---------- */
-  function fillSleep() {
-    var d = D.sleep, sec = $('#sleep');
+  /* ---------- 청풍 휴게실 ---------- */
+  function fillCheongpung() {
+    var d = D.cheongpung, sec = $('#cheongpung');
     if (!sec) return;
     if (!d || d.show === false) { sec.hidden = true; return; }
     sec.hidden = false;
@@ -916,7 +916,7 @@
     fillInfo();
     heroSlider();
     fillPricing();
-    fillSleep();
+    fillCheongpung();
     fillWaterslide();
     fillHerb();
     fillGreeting();

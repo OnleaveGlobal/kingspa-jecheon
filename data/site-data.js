@@ -90,20 +90,20 @@ window.SITE_DATA = {
     },
   },
 
-  /* ---------- 4. 청풍 휴게실 (수면 공간) ---------- */
+  /* ---------- 4. 청풍 휴게실 ---------- */
   // 시설안내 다음, 옥상 물놀이 앞에 나옵니다.
-  sleep: {
+  cheongpung: {
     show: true,
     title: "청풍 휴게실",
-    // 「수면」은 손님이 찾을 때 쓰는 말이라 제목 옆에 남겨 둡니다
-    sub: "밤새 머무시는 분을 위한 수면 공간입니다",
-    lead: { src: "assets/img/sleep.jpg", alt: "나무 칸막이로 나뉜 2층 침상이 줄지어 선 청풍 휴게실" },
-    desc: "나무로 칸을 나눈 2층 침상입니다. 한 칸씩 들어가 누우면 옆이 가려져, 사람이 많아도 덜 방해받습니다. 칸마다 매트와 목침이 있고 위 칸은 사다리로 올라갑니다.",
+    // 이 방은 다른 이름으로 부르지 않습니다 (사업주 요청) — 「청풍 휴게실」로만 씁니다
+    sub: "밤새 머무시는 분께",
+    lead: { src: "assets/img/cheongpung.jpg", alt: "나무 칸막이로 나뉜 2층 침상이 줄지어 선 청풍 휴게실" },
+    desc: "나무로 칸을 나눈 2층 침상입니다. 한 칸씩 들어가 누우면 옆이 가려져, 사람이 많아도 덜 방해받습니다. 칸마다 매트와 베개가 있고 위 칸은 사다리로 올라갑니다.",
     photos: [
-      { src: "assets/img/sleep-1.jpg", cap: "침상 한 칸",   alt: "매트가 깔린 아래층 침상" },
-      { src: "assets/img/sleep-2.jpg", cap: "남 · 여 구분", alt: "남자방과 여자방 방향을 알리는 표지" },
-      { src: "assets/img/sleep-3.jpg", cap: "목침",         alt: "침상 안쪽에 놓인 목침" },
-      { src: "assets/img/sleep-4.jpg", cap: "침상 사이 통로", alt: "침상 사이로 난 통로" },
+      { src: "assets/img/cheongpung-1.jpg", cap: "침상 한 칸",   alt: "매트가 깔린 아래층 침상" },
+      { src: "assets/img/cheongpung-2.jpg", cap: "남 · 여 구분", alt: "남자방과 여자방 방향을 알리는 표지" },
+      { src: "assets/img/cheongpung-3.jpg", cap: "베개",     alt: "침상 안쪽에 놓인 베개" },
+      { src: "assets/img/cheongpung-4.jpg", cap: "침상 사이 통로", alt: "침상 사이로 난 통로" },
     ],
     // ⚠️ 요금은 적지 않았습니다. 찜질방 이용권에 포함되는 것이 맞으면 알려주세요.
     info: [
