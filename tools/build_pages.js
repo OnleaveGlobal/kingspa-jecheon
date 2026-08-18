@@ -35,9 +35,12 @@ const PORT = 8931;
 const PAGES = [
   {
     slug: 'facilities', from: '#facilities',
+    // 청풍 휴게실은 따로 떨어진 섹션이지만 손님에게는 같은 「시설」입니다.
+    // 시설안내를 누르고 들어왔는데 없으면 못 보고 지나칩니다.
+    also: ['#cheongpung'],
     nav: '시설안내',
-    title: '시설안내 — 대욕장 · 노천탕 · 불가마 · 찜질방',
-    desc: '충북 최대 2,400평. 돔 천장 대욕장, 허브를 요일마다 바꿔 담는 야외 노천탕, 참나무 전통 불가마, 히말라야 소금방 · 편백 히노키방 · 냉방 · 수면 릴렉스존 · 헬스장 · 키즈존까지.',
+    title: '시설안내 — 대욕장 · 노천탕 · 불가마 · 청풍 휴게실',
+    desc: '충북 최대 2,400평. 돔 천장 대욕장, 허브를 요일마다 바꿔 담는 야외 노천탕, 참나무 전통 불가마, 히말라야 소금방 · 편백 히노키방 · 냉방 · 청풍 휴게실 · 헬스장 · 키즈존까지.',
   },
   {
     slug: 'waterslide', from: '#waterslide',
@@ -498,7 +501,7 @@ function tidy(html) {
       });
     }
 
-    const body = await page.evaluate((sel) => {
+    const body = await page.evaluate(({ sel, also }) => {
       const sec = document.querySelector(sel);
       if (!sec) return null;
       const clone = sec.cloneNode(true);
@@ -519,8 +522,23 @@ function tidy(html) {
         const img = b.querySelector('img');
         if (img) b.replaceWith(img);
       });
-      return clone.outerHTML;
-    }, p.from);
+
+      // 딸려 붙는 섹션들. 제목은 h2 그대로 두어 위아래 관계가 남게 하고,
+      // id 도 남겨 두어 그 페이지 안에서 바로 걸어갈 수 있게 합니다.
+      const extra = (also || []).map((s2) => {
+        const el = document.querySelector(s2);
+        if (!el) return '';
+        const c2 = el.cloneNode(true);
+        c2.removeAttribute('hidden');
+        c2.querySelectorAll('[data-spot]').forEach((b) => {
+          const img = b.querySelector('img');
+          if (img) b.replaceWith(img);
+        });
+        return c2.outerHTML;
+      }).join('');
+
+      return clone.outerHTML + extra;
+    }, { sel: p.from, also: p.also || [] });
 
     if (!body) {
       console.log(`  ⚠️  ${p.slug} — #${p.from} 섹션이 없어 건너뜁니다 (site-data 에서 꺼져 있나요?)`);
