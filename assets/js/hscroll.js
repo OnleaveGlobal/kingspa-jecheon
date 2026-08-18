@@ -75,7 +75,7 @@
   }
 
   function init() {
-    ['.facils--row', '#slpPhotos', '#wsPhotos'].forEach(function (sel) {
+    ['.facils--row', '#wsPhotos'].forEach(function (sel) {
       attach(document.querySelector(sel));
     });
   }

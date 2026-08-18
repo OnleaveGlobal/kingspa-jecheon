@@ -101,32 +101,6 @@
     }
   }
 
-  /* ---------- 청풍 휴게실 ---------- */
-  function fillCheongpung() {
-    var d = D.cheongpung, sec = $('#cheongpung');
-    if (!sec) return;
-    if (!d || d.show === false) { sec.hidden = true; return; }
-    sec.hidden = false;
-
-    $('#slpTitle').textContent = d.title || '';
-    $('#slpSub').textContent = d.sub || '';
-    $('#slpDesc').textContent = d.desc || '';
-
-    var lead = $('#slpLead');
-    if (lead && d.lead) { lead.src = d.lead.src; lead.alt = d.lead.alt || ''; }
-
-    $('#slpPhotos').innerHTML = (d.photos || []).map(function (p) {
-      return '<li><figure>' +
-        '<img src="' + p.src + '" alt="' + (p.alt || p.cap || '') + '" loading="lazy">' +
-        (p.cap ? '<figcaption>' + p.cap + '</figcaption>' : '') +
-        '</figure></li>';
-    }).join('');
-
-    $('#slpInfo').innerHTML = (d.info || []).map(function (r) {
-      return '<div><dt>' + r.t + '</dt><dd>' + r.d + '</dd></div>';
-    }).join('');
-  }
-
   /* ---------- 워터슬라이드 ---------- */
   function fillWaterslide() {
     var w = D.waterslide;
@@ -916,7 +890,6 @@
     fillInfo();
     heroSlider();
     fillPricing();
-    fillCheongpung();
     fillWaterslide();
     fillHerb();
     fillGreeting();

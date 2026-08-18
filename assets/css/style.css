@@ -854,13 +854,6 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 
 /* 대표 사진 — 통으로 가로를 다 쓴다 */
 .ws__lead{overflow:hidden; aspect-ratio:5/2; border:0}
-
-/* 수면방 — 대표 사진 아래에 설명 한 단락, 그 아래 사진 넉 장 */
-.slp__desc{
-  margin:22px auto 0; max-width:760px; text-align:center;
-  font-size:clamp(14.5px,1.15vw,16px); line-height:1.75; color:var(--gray);
-}
-.slp .wsphotos{margin-top:clamp(24px,3vw,34px)}
 .ws__lead img, .ws__lead .ph{width:100%; height:100%; object-fit:cover; display:block}
 
 /* 사진과 정보를 좌우로 붙이지 않고 위아래로 풀어 놓습니다 */
