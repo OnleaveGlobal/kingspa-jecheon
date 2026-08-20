@@ -1249,7 +1249,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
    좁은 화면에서는 다른 글과 같이 왼쪽에 붙입니다.
    좁을 때 오른쪽으로 밀면 「맨 위로」 단추와 겹칩니다. */
 .ft__by{display:flex; align-items:center; justify-content:flex-start}
-.ft__by img{width:min(260px,62vw); height:auto}
+.ft__by img{width:min(220px,58vw); height:auto}
 
 /* ============================================================
    맨 위로 · 모바일 바
