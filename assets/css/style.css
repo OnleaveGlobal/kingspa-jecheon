@@ -1227,7 +1227,11 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
    ============================================================ */
 .ft{background:#2c2620; color:#f0eae3; border-top:4px solid var(--brand)}
 .ft__in{display:grid; gap:26px; padding:40px 20px 38px}
-@media (min-width:900px){ .ft__in{grid-template-columns:auto minmax(0,1fr); align-items:start; gap:44px} }
+@media (min-width:900px){
+  .ft__in{grid-template-columns:auto minmax(0,1fr) auto; align-items:start; gap:44px}
+  /* 로고와 눈높이를 맞춥니다 — 로고 판이 52px 입니다 */
+  .ft__by{height:52px; justify-content:flex-end}
+}
 .ft__brand{display:flex; align-items:center; gap:12px}
 .ft__brand .brand__mark{height:52px}
 .ft__brand .brand__wm{height:21px}
@@ -1241,6 +1245,11 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 .ft__nav a{font-size:13px; color:rgba(240,234,227,.72)}
 .ft__nav a:hover{color:#fff; text-decoration:underline}
 .ft__copy{margin-top:10px !important; font-size:12.5px; color:rgba(240,234,227,.42)}
+/* 만든 곳 표시 — 넓은 화면에서는 왼쪽 위 로고와 같은 줄 오른쪽 끝,
+   좁은 화면에서는 다른 글과 같이 왼쪽에 붙입니다.
+   좁을 때 오른쪽으로 밀면 「맨 위로」 단추와 겹칩니다. */
+.ft__by{display:flex; align-items:center; justify-content:flex-start}
+.ft__by img{width:min(260px,62vw); height:auto}
 
 /* ============================================================
    맨 위로 · 모바일 바
