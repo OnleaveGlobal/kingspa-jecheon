@@ -1230,7 +1230,7 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 @media (min-width:900px){
   .ft__in{grid-template-columns:auto minmax(0,1fr) auto; align-items:start; gap:44px}
   /* 로고와 눈높이를 맞춥니다 — 로고 판이 52px 입니다 */
-  .ft__by{height:52px; justify-content:flex-end}
+  .ft__by{height:52px}
 }
 .ft__brand{display:flex; align-items:center; gap:12px}
 .ft__brand .brand__mark{height:52px}
@@ -1248,8 +1248,13 @@ body.nav-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg
 /* 만든 곳 표시 — 넓은 화면에서는 왼쪽 위 로고와 같은 줄 오른쪽 끝,
    좁은 화면에서는 다른 글과 같이 왼쪽에 붙입니다.
    좁을 때 오른쪽으로 밀면 「맨 위로」 단추와 겹칩니다. */
-.ft__by{display:flex; align-items:center; justify-content:flex-start}
-.ft__by img{width:min(220px,58vw); height:auto}
+.ft__by{display:flex; align-items:center; justify-content:flex-start;
+  margin-top:-14px}          /* 저작권 줄에 바짝 붙입니다 */
+.ft__by img{width:min(170px,46vw); height:auto}
+@media (min-width:900px){
+  .ft__by{justify-content:flex-end; margin-top:0}
+  .ft__by img{width:220px}
+}
 
 /* ============================================================
    맨 위로 · 모바일 바
